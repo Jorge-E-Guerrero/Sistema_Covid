@@ -14,7 +14,7 @@ import Button from '@mui/material/Button';
 
 
 
-
+//import { Link } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -229,7 +229,7 @@ export default function Administracion() {
                     <Typography component="h1" variant="h5">
                         Crear Nuevo Usuario Empleado
                     </Typography>
-                    <Link to='/Home'>
+                    <Link to='/SignupEmpleado'>
                     <Button
                                     type="submit"
                                     variant="contained"

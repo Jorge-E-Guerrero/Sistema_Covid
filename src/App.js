@@ -11,6 +11,7 @@ import Contacto from './Contacto';
 import Proceso from './Proceso';
 import Procesodatos from './Procesodatos';
 import Administracion from './Administracion';
+import SignupEmpleado from './SignupEmpleado';
 
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
@@ -77,6 +78,12 @@ function App() {
         <Switch>
           <Route exact path="/signup">
             <Signup />
+          </Route>
+        </Switch>
+
+        <Switch>
+          <Route exact path='/SignupEmpleado'>
+            <SignupEmpleado />
           </Route>
         </Switch>
 
