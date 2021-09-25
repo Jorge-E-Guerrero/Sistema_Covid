@@ -166,6 +166,7 @@ export default function Signup() {
                                 margin="normal"
                                 required
                                 fullWidth
+                                type='number'
                                 id="dpi"
                                 label="DPI"
                                 name="dpi"
@@ -224,6 +225,7 @@ export default function Signup() {
                                     id="dia"
                                     autoComplete="apellido"
                                     inputRef={refDia}
+                                    InputProps={{ inputProps: { min: 1, max:31 } }}
                                 />
                                 <TextField
                                     margin="normal"
@@ -234,6 +236,7 @@ export default function Signup() {
                                     id="mes"
                                     autoComplete="mes"
                                     inputRef={refMes}
+                                    InputProps={{ inputProps: { min: 1, max:12 } }}
                                 />
                                 <TextField
                                     margin="normal"
@@ -244,6 +247,7 @@ export default function Signup() {
                                     id="year"
                                     autoComplete="year"
                                     inputRef={refYear}
+                                    InputProps={{ inputProps: { min: 1900, max:2021 } }}
                                 />
                             </Box>
                             
