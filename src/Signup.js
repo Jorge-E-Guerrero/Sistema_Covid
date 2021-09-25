@@ -166,7 +166,6 @@ export default function Signup() {
                                 margin="normal"
                                 required
                                 fullWidth
-                                type='number'
                                 id="dpi"
                                 label="DPI"
                                 name="dpi"
