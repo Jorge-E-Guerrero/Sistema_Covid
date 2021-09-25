@@ -52,13 +52,13 @@ const enviarDatos = async (url, data) => {
     console.log(respuesta);
     const json = await respuesta.json();
     console.log(json);
-    window.localStorage.setItem('info', JSON.stringify(json));
-    const user = JSON.parse(window.localStorage.getItem('info'));
+    window.localStorage.setItem('NuevoEmpleado', JSON.stringify(json));
+    const user = JSON.parse(window.localStorage.getItem('NuevoEmpleado'));
   
     const conexion = user.conectado;
     if (conexion === true) {
-      window.location.reload();
-      window.location.replace("/Home");
+      window.location.replace("/Administración");
+      window.localStorage.removeItem('NuevoEmpleado');
     }
 
 }
@@ -92,20 +92,18 @@ export default function Signup() {
             enfermedad: selectedEnfermedad,
             grupo: selectedGrupo,
             //gender: selectedValue,
-            tipo_usuario: '1'
+            tipo_usuario: '2'
 
         }
         console.log(data);
         if(refDPI.current.value != '' && refPassword.current.value != '' && 
         refNombre.current.value != '' && refApellido.current.value != '' && nacimiento != '' && 
-        refPhone.current.value != '' && selectedCentro != '' )
-        {
+        refPhone.current.value != '' && selectedCentro != '' ){
             enviarDatos(url_signup, data);
-        }
-        else 
-        {
+        }else {
             window.alert('Llena todos los campos requeridos')
         }
+        
     };
 
 
@@ -159,7 +157,7 @@ export default function Signup() {
 
                         </Avatar>
                         <Typography component="h1" variant="h5">
-                            Sign up
+                            Crear Usuario Empleado
                         </Typography>
                         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                             <TextField
@@ -341,7 +339,7 @@ export default function Signup() {
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign Up
+                            Crear 
                         </Button>
                         <Grid container>
                             <Grid item xs>
