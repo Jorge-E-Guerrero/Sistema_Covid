@@ -17,7 +17,7 @@ import Container from '@mui/material/Container';
 
 //import { useParams } from 'react-router-dom';
 
-import MultipleSelect from './MultipleSelect';
+import MultipleSelect from './componentes/MultipleSelect';
 
 
 function Copyright(props) {

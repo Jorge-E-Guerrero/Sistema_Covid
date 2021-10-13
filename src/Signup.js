@@ -14,7 +14,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
-
+import axios from 'axios';
 
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -140,6 +140,39 @@ export default function Signup() {
             password: data.get('password'),
         });
     };
+
+/*
+
+    const baseURL = "http://localhost/ws-login/vacunas.php";
+
+    const [post, setPost] = React.useState(['']);
+    
+    console.log(post);
+   
+    
+    
+    React.useEffect(() => {
+        axios.get(baseURL).then(response => {
+          setPost(response.data);
+        });
+    }, []);
+*/
+
+    const centro_url = "http://localhost/ws-login/centros.php";
+
+    const [centro, setCentro] = React.useState(['']);
+    
+
+   
+    
+    
+    React.useEffect(() => {
+        axios.get(centro_url).then(response => {
+          setCentro(response.data);
+        });
+    }, []);
+
+    console.log(centro);
 
     return (
         <ThemeProvider theme={theme}>
@@ -285,9 +318,11 @@ export default function Signup() {
                                 <MenuItem value="">
                                     <em>None</em>
                                 </MenuItem>
-                                <MenuItem value='UNIS'>UNIS</MenuItem>
-                                <MenuItem value='Pradera Concepción'>Pradera Concepción</MenuItem>
-                                <MenuItem value='Municipalidad Fraijanes'>Municipalidad Fraijanes</MenuItem>
+                                {centro.map((name) => (
+                                    <MenuItem key={name} value={name}>
+                                      {name}
+                                    </MenuItem>
+                                  ))}
                             </Select>
                         </FormControl>
                         <FormControl sx={{ m: 1, minWidth: 400 }}>
@@ -306,7 +341,7 @@ export default function Signup() {
                                 <MenuItem value='Artritis'>Artritis</MenuItem>
                                 <MenuItem value='Asma'>Asma</MenuItem>
                                 <MenuItem value='Cáncer'>Cáncer</MenuItem>
-                                <MenuItem value='Fibrosis quistica'>Fibrosis quistica</MenuItem>
+                                <MenuItem value='Fibrosis quística'>Fibrosis quística</MenuItem>
                                 <MenuItem value='Diabetes'>Diabetes</MenuItem>
                                 <MenuItem value='Epilepsia'>Epilepsia</MenuItem>
                                 <MenuItem value='VIH/SIDA'>VIH/SIDA</MenuItem>
@@ -327,14 +362,14 @@ export default function Signup() {
                                 <MenuItem value="">
                                     <em>Ninguno</em>
                                 </MenuItem>
-                                <MenuItem value='Resisdentes'>Resisdentes</MenuItem>
+                                <MenuItem value='Residentes'>Residentes</MenuItem>
                                 <MenuItem value='Personal de primera linea'>Personal de primera linea</MenuItem>
                                 <MenuItem value='Personal sanitario'>Personal sanitario</MenuItem>
                                 <MenuItem value='Fuerzas de seguridad'>Fuerzas de seguridad</MenuItem>
                                 <MenuItem value='Fuerzas de emergencia'>Fuerzas de emergencia</MenuItem>
                                 <MenuItem value='Fuerzas armadas'>Fuerzas armadas</MenuItem>
-                                <MenuItem value='Educacion infantil/especial'>Educacion infantil/especial</MenuItem>
-                                <MenuItem value='Educacion primaria/secundaria'>Educacion primaria/secundaria</MenuItem>
+                                <MenuItem value='Educación infantil/especial'>Educación infantil/especial</MenuItem>
+                                <MenuItem value='Educación primaria/secundaria'>Educación primaria/secundaria</MenuItem>
                             </Select>
                         </FormControl>
                         <Button

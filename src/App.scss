@@ -1,0 +1,9 @@
+@mixin imagenes {
+    width: max-content;
+    font-size: 120px;
+}
+
+
+.imagen {
+     @include imagenes();
+}

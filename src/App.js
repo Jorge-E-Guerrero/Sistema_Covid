@@ -1,17 +1,22 @@
 
 import './App.css';
-import Appbar from './Appbar';
+import './App.scss';
+import Appbar from './appbar/Appbar';
 import Login from './Login';
 import Signup from './Signup'
 import Home from './Home';
-import Register from './Register';
+import Register from './validacion/Register';
 import Aplicacion from './Aplicacion';
-import Confirmacion from './Confirmacion';
+import Confirmacion from './validacion/Confirmacion';
 import Contacto from './Contacto';
-import Proceso from './Proceso';
-import Procesodatos from './Procesodatos';
-import Administracion from './Administracion';
-import SignupEmpleado from './SignupEmpleado';
+import Proceso from './proceso/Proceso';
+import Procesodatos from './proceso/Procesodatos';
+import Administracion from './administracion/Administracion';
+import SignupEmpleado from './administracion/SignupEmpleado';
+import Centros from './centros/Centros';
+import Vacunas from './vacuna/Vacunas';
+import Habilitacion from './habilitacion/Habilitacion';
+import Informacion from './informacion/Informacion';
 
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
@@ -114,7 +119,7 @@ function App() {
 
         <Switch>
           <Route exact path='/Información'>
-            <Home />
+            <Informacion />
           </Route>
         </Switch>
 
@@ -142,6 +147,23 @@ function App() {
           </Route>
         </Switch>
 
+        <Switch>
+          <Route exact path='/Centros'>
+            <Centros />
+          </Route>
+        </Switch>
+
+        <Switch>
+        <Route exact path='/Vacunas'>
+          <Vacunas />
+        </Route>
+      </Switch>
+
+      <Switch>
+      <Route exact path='/Habilitación'>
+        <Habilitacion />
+      </Route>
+    </Switch>
 
       </div>
     </Router>

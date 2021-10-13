@@ -12,6 +12,8 @@ import Container from '@mui/material/Container';
 
 import Button from '@mui/material/Button';
 
+import MultipleSelect from '../componentes/MultipleSelect';
+import MultipleSelect2 from '../componentes/MultipleSelect2';
 
 
 //import { Link } from '@mui/material';
@@ -20,6 +22,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { Link } from 'react-router-dom';
+
+import CambioAtributos from './CambioAtributos';
 
 
 function Copyright(props) {
@@ -37,6 +41,8 @@ function Copyright(props) {
 
 const url_cambiarUsuario = 'http://localhost/ws-login/cambiarUsuario.php';
 const url_borrarUsuario = 'http://localhost/ws-login/borrarUsuario.php';
+//const url_cambiarAtributo = 'http://localhost/ws-login/cambiarAtributo.php';
+
 
 const enviarDatosCambio = async (url, data) => {
     const respuesta = await fetch(url, {
@@ -51,11 +57,11 @@ const enviarDatosCambio = async (url, data) => {
     console.log(json);
     window.localStorage.setItem('CambioUsuario', JSON.stringify(json));
     const user = JSON.parse(window.localStorage.getItem('CambioUsuario'));
-  
+
     const operacion = user.operacion;
     if (operacion == true) {
-      window.location.reload();
-      //window.location.removeItem('CambioUsuario');
+        window.location.reload();
+        //window.location.removeItem('CambioUsuario');
     } else {
         window.alert('Error');
     }
@@ -75,12 +81,12 @@ const enviarDatosBorrar = async (url, data) => {
     console.log(json);
     window.localStorage.setItem('BorrarUsuario', JSON.stringify(json));
     const user = JSON.parse(window.localStorage.getItem('BorrarUsuario'));
-  
+
     const operacion = user.operacion;
     if (operacion == true) {
-      window.location.reload();
-      window.alert('Se ha borrado exitosamente');
-      //window.location.removeItem('CambioUsuario');
+        window.location.reload();
+        window.alert('Se ha borrado exitosamente');
+        //window.location.removeItem('CambioUsuario');
     } else {
         window.alert('Error');
     }
@@ -93,7 +99,8 @@ export default function Administracion() {
 
 
     const refDPIUsuario = React.useRef(null);
-    
+
+
     const handleCambioUsuario = () => {
         const data = {
             dpi: refDPIUsuario.current.value,
@@ -101,12 +108,12 @@ export default function Administracion() {
 
         }
         console.log(data);
-        if(selectedUsuario != ''){
+        if (selectedUsuario != '') {
             enviarDatosCambio(url_cambiarUsuario, data);
         } else {
             window.alert('Ingresa un tipo de usuario');
         }
-        
+
     };
 
 
@@ -117,12 +124,12 @@ export default function Administracion() {
 
         }
         console.log(data);
-        if(refDPIUsuarioBorrar.current.value != ''){
+        if (refDPIUsuarioBorrar.current.value != '') {
             enviarDatosBorrar(url_borrarUsuario, data);
         } else {
             window.alert('Ingresa un DPI');
         }
-        
+
     };
 
 
@@ -150,13 +157,13 @@ export default function Administracion() {
                     <Typography component="h1" variant="h5">
                         Cambiar usuario
                     </Typography>
-                    <Box component="form"  noValidate sx={{ mt: 1 }}>
+                    <Box component="form" noValidate sx={{ mt: 1 }}>
                         <Box component="form"
-                        sx={{
-                            '& .MuiTextField-root': { m: 1, width: 300 },
-                        }}
-                        noValidate
-                        autoComplete="off"
+                            sx={{
+                                '& .MuiTextField-root': { m: 1, width: 300 },
+                            }}
+                            noValidate
+                            autoComplete="off"
                         >
                             <TextField
                                 margin="normal"
@@ -182,28 +189,28 @@ export default function Administracion() {
                                     <MenuItem value='2'>Empleado</MenuItem>
                                     <MenuItem value='3'>Administrador</MenuItem>
                                 </Select>
-                                
+
                             </FormControl>
                             <Button
-                                    onClick={handleCambioUsuario}
-                                    type="submit"
-                                    variant="contained"
-                                    sx={{ mt: 3, mb: 2 }}
-                                >
-                                    Cambiar Privilegios
-                                </Button>
-                        </Box> 
+                                onClick={handleCambioUsuario}
+                                type="submit"
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2 }}
+                            >
+                                Cambiar Privilegios
+                            </Button>
+                        </Box>
                     </Box>
                     <Typography component="h1" variant="h5">
                         Borrar usuario
                     </Typography>
-                    <Box component="form"  noValidate sx={{ mt: 1 }}>
+                    <Box component="form" noValidate sx={{ mt: 1 }}>
                         <Box component="form"
-                        sx={{
-                            '& .MuiTextField-root': { m: 1, width: 300 },
-                        }}
-                        noValidate
-                        autoComplete="off"
+                            sx={{
+                                '& .MuiTextField-root': { m: 1, width: 300 },
+                            }}
+                            noValidate
+                            autoComplete="off"
                         >
                             <TextField
                                 margin="normal"
@@ -217,28 +224,29 @@ export default function Administracion() {
                                 inputRef={refDPIUsuarioBorrar}
                             />
                             <Button
-                                    onClick={handleBorrarUsuario}
-                                    type="submit"
-                                    variant="contained"
-                                    sx={{ mt: 3, mb: 2 }}
-                                >
-                                    Borrar Usuario
-                                </Button>
-                        </Box> 
+                                onClick={handleBorrarUsuario}
+                                type="submit"
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2 }}
+                            >
+                                Borrar Usuario
+                            </Button>
+                        </Box>
                     </Box>
+                    <CambioAtributos />
                     <Typography component="h1" variant="h5">
                         Crear Nuevo Usuario Empleado
                     </Typography>
                     <Link to='/SignupEmpleado'>
-                    <Button
-                                    type="submit"
-                                    variant="contained"
-                                    sx={{ mt: 3, mb: 2 }}
-                                >
-                                    Crear Usuario
-                                </Button>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            sx={{ mt: 3, mb: 2 }}
+                        >
+                            Crear Usuario
+                        </Button>
                     </Link>
-                 </Box>
+                </Box>
             </div>
             <Copyright sx={{ mt: 8, mb: 4 }} />
         </Container>

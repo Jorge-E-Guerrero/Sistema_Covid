@@ -14,7 +14,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 
-
+import axios from 'axios';
 
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -139,6 +139,35 @@ export default function Signup() {
         });
     };
 
+    
+    const baseURL = "http://localhost/ws-login/vacunas.php";
+
+    const [post, setPost] = React.useState(['']);
+    
+    console.log(post);
+   
+    
+    
+    React.useEffect(() => {
+        axios.get(baseURL).then(response => {
+          setPost(response.data);
+        });
+    }, []);
+
+/*
+    const centro_url = "http://localhost/ws-login/centros.php";
+
+    const [centro, setCentro] = React.useState(['']);
+    
+
+    React.useEffect(() => {
+        axios.get(centro_url).then(response => {
+          setCentro(response.data);
+        });
+    }, []);
+
+    console.log(centro);
+*/
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
@@ -283,9 +312,11 @@ export default function Signup() {
                                 <MenuItem value="">
                                     <em>None</em>
                                 </MenuItem>
-                                <MenuItem value='UNIS'>UNIS</MenuItem>
-                                <MenuItem value='Pradera Concepción'>Pradera Concepción</MenuItem>
-                                <MenuItem value='Municipalidad Fraijanes'>Municipalidad Fraijanes</MenuItem>
+                                {post.map((name) => (
+                                    <MenuItem value={name}>
+                                      {name}
+                                    </MenuItem>
+                                  ))}
                             </Select>
                         </FormControl>
                         <FormControl sx={{ m: 1, minWidth: 400 }}>

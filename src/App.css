@@ -55,9 +55,56 @@
 
   
 }
+
+#home{
+  width:100%;
+  max-width: 800px;
+
+  
+}
+
+#divHome{
+  width:100%;
+
+  
+}
 #contacto {
   
   width: max-content;
   max-width: 80%;
 
+}
+
+#vacunas{
+  max-width: 800px;
+
+}
+#divVacuna{
+  width:100%;
+  max-width: 100%;
+
+  
+}
+
+
+#columnasTexto {
+  columns: 3;
+  column-rule: 2px solid lightslategray;
+}
+
+#columnasTexto2 {
+  columns: 2;
+  column-rule: 2px solid lightslategray;
+}
+
+
+#card {
+  background-color: rgb(185, 242, 252)
+}
+
+#tituloHome {
+  font-size: 35px;
+  color: azure;
+  text-shadow: 2px 2px 2px black ;
+  text-decoration: underline;
 }
