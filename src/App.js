@@ -17,8 +17,11 @@ import Centros from './centros/Centros';
 import Vacunas from './vacuna/Vacunas';
 import Habilitacion from './habilitacion/Habilitacion';
 import Informacion from './informacion/Informacion';
-
+import Contenido from './contenido/Contenido';
+import Noticias from './noticias/Noticias';
+import Footer from './Footer';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
 
 /*
 import { createTheme } from '@mui/material/styles';
@@ -113,7 +116,7 @@ function App() {
 
         <Switch>
           <Route exact path='/Noticias'>
-            <Home />
+            <Noticias />
           </Route>
         </Switch>
 
@@ -154,19 +157,27 @@ function App() {
         </Switch>
 
         <Switch>
-        <Route exact path='/Vacunas'>
-          <Vacunas />
-        </Route>
-      </Switch>
+          <Route exact path='/Vacunas'>
+            <Vacunas />
+          </Route>
+        </Switch>
 
-      <Switch>
-      <Route exact path='/Habilitación'>
-        <Habilitacion />
-      </Route>
-    </Switch>
+        <Switch>
+          <Route exact path='/Habilitación'>
+            <Habilitacion />
+          </Route>
+        </Switch>
+
+        <Switch>
+          <Route exact path='/Contenido'>
+            <Contenido />
+          </Route>
+        </Switch>
 
       </div>
+      <Footer />
     </Router>
+
 
   );
 }

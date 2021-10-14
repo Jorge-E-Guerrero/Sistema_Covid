@@ -32,7 +32,10 @@ function logOut() {
         tipo_usuario: '0'
     }
     window.localStorage.setItem('info', JSON.stringify(anonimo));
+    
     window.location.reload();
+    window.location.replace('/Home');
+    
 }
 
 

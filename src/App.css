@@ -108,3 +108,32 @@
   text-shadow: 2px 2px 2px black ;
   text-decoration: underline;
 }
+
+
+
+#noticias{
+  width:100%;
+  max-width: 100%;
+
+  
+}
+
+#divNoticias{
+  width:100%;
+
+  
+}
+
+#footer{
+  width:100%;
+  max-width: 100%;
+
+
+  
+}
+
+#divFooter{
+  width:100%;
+
+  
+}
