@@ -36,7 +36,7 @@ const enviarCrearVacuna = async (url, data) => {
     //window.localStorage.setItem('CambioUsuario', JSON.stringify(json));
     const user = json; //JSON.parse(window.localStorage.getItem('CambioUsuario'));
 
-    const operacion = user.operacion;
+    const operacion = user.confirmacion;
     if (operacion == true) {
         window.alert('Vacuna creada');
         window.location.reload();

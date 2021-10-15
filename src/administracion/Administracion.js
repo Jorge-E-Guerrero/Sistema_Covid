@@ -24,6 +24,7 @@ import Select from '@mui/material/Select';
 import { Link } from 'react-router-dom';
 
 import CambioAtributos from './CambioAtributos';
+import ImportarCsv from './importarCsv';
 
 
 function Copyright(props) {
@@ -246,9 +247,10 @@ export default function Administracion() {
                             Crear Usuario
                         </Button>
                     </Link>
+                    <ImportarCsv />
                 </Box>
             </div>
-            <Copyright sx={{ mt: 8, mb: 4 }} />
+
         </Container>
     );
 }

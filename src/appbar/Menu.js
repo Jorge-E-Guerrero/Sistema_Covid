@@ -69,7 +69,7 @@ export default function Menu() {
             <Divider />
             <List>
                 { usuario === '1' &&
-                    ['Proceso'].map((text, index) => (
+                    ['Ajustes','Proceso'].map((text, index) => (
                         <ListItem button key={text} component={Link} to={'/' + text} >
 
                             <ListItemText primary={text} />
@@ -77,7 +77,7 @@ export default function Menu() {
                     ))
                 }
                 { usuario === 2 &&
-                    ['Proceso', 'Validación'].map((text, index) => (
+                    ['Ajustes','Proceso', 'Validación'].map((text, index) => (
                         <ListItem button key={text} component={Link} to={'/' + text} >
 
                             <ListItemText primary={text} />
@@ -85,7 +85,7 @@ export default function Menu() {
                     ))
                 }
                 { usuario === 3 &&
-                    ['Proceso', 'Administración', 'Validación', 'Contenido','Habilitación','Centros','Vacunas'].map((text, index) => (
+                    ['Ajustes','Proceso', 'Administración', 'Validación', 'Contenido','Habilitación','Centros','Vacunas'].map((text, index) => (
                         <ListItem button key={text} component={Link} to={'/' + text}>
 
                             <ListItemText primary={text} />

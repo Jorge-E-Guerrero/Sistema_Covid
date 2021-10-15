@@ -6,6 +6,8 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Link, useHistory } from 'react-router-dom';
 
+import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
+import SvgIcon from '@mui/material/SvgIcon';
 
 
 import { createTheme } from '@mui/material/styles';
@@ -53,6 +55,7 @@ function Appbar() {
                 <AppBar position="static" theme={theme}>
                     <Toolbar>
                         <Menu />
+                        <SupervisedUserCircleIcon />
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                             Sistema Vacunación
                         </Typography>

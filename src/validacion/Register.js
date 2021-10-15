@@ -13,6 +13,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import axios from 'axios';
 //import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 //import { useParams } from 'react-router-dom';
@@ -63,18 +64,14 @@ const enviarDatos = async (url, data) => {
   console.log(json);
   window.localStorage.setItem('registro', JSON.stringify(json));
   const user = JSON.parse(window.localStorage.getItem('registro'));
-  console.warn();
 
-  const dosis_verificada = user.dosis;
-  if (dosis_verificada === 'dosis1_fecha') {
+
+  const dosis_verificada = user.Asignado;
+  if (dosis_verificada === false) {
     window.location.reload();
     window.location.replace("/Aplicacíon");
 
-  } else if(dosis_verificada === 'dosis2_fecha') {
-    //window.location.removeItem('registro');  
-    window.location.replace('/Confirmación');
-    
-  } else if(dosis_verificada === 'refuerzo_fecha') {
+  } else if(dosis_verificada === true) {
     //window.location.removeItem('registro');  
     window.location.replace('/Confirmación');
     
@@ -93,14 +90,25 @@ export default function Register() {
     const handleLogin = () => {
         const data = {
         dpi: refDPI.current.value,
-        centro: validacion_centro,
-        dosis: validacion_dosis
+        centro: validacion_centro
         }
         console.log(data);
         enviarDatos(url_login, data);
     };
 
+    const baseURL = "http://localhost/ws-login/centrosTotales.php";
 
+    const [post, setPost] = React.useState(['']);
+    
+    console.log(post);
+   
+    
+    
+    React.useEffect(() => {
+        axios.get(baseURL).then(response => {
+          setPost(response.data);
+        });
+    }, []);
 
 
 
@@ -176,23 +184,11 @@ export default function Register() {
                                 <MenuItem value="">
                                     <em>None</em>
                                 </MenuItem>
-                                <MenuItem value='UNIS'>UNIS</MenuItem>
-                                <MenuItem value='Pradera Concepción'>Pradera Concepción</MenuItem>
-                                <MenuItem value='Municipalidad Fraijanes'>Municipalidad Fraijanes</MenuItem>
-                            </Select>
-                        </FormControl>
-                        <FormControl sx={{ m: 1, minWidth: 400 }}>
-                            <InputLabel id="demo-simple-select-helper-label" >Dosis</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-helper-label"
-                                id="demo-simple-select-helper"
-                                value={validacion_dosis}
-                                label="Dosis"
-                                onChange={handleChangeDosis}
-                            >
-                                <MenuItem value='dosis1_fecha'>Primera</MenuItem>
-                                <MenuItem value='dosis2_fecha'>Segunda</MenuItem>
-                                <MenuItem value='refuerzo_fecha'>Refuerzo</MenuItem>
+                                {post.map((name) => (
+                                    <MenuItem value={name}>
+                                      {name}
+                                    </MenuItem>
+                                  ))}
                             </Select>
                         </FormControl>
 
@@ -210,7 +206,7 @@ export default function Register() {
                     </Box>
                 </Box>
             </div>
-            <Copyright sx={{ mt: 8, mb: 4 }} />
+
         </Container>
     );
 }

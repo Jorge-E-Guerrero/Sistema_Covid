@@ -2,6 +2,8 @@ import * as React from 'react';
 import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Link from '@mui/material/Link';
 
 
 import Container from '@mui/material/Container';
@@ -68,6 +70,10 @@ export default function Noticias() {
                             <div id="noticia">
                             <h1>{contenido[0].[2]}</h1>
                             <p>{contenido[0].[3]}</p>
+                            <Link href={contenido[0].[4]} underline="none">
+                                <Button size="small">Descubre más</Button>
+                            </Link>
+                            
                             </div>
                             <CardMedia
                                 component="img"
@@ -91,6 +97,9 @@ export default function Noticias() {
                             <div id="noticia">
                             <h1>{contenido[1].[2]}</h1>
                             <p>{contenido[1].[3]}</p>
+                            <Link href={contenido[1].[4]} underline="none">
+                                <Button size="small">Descubre más</Button>
+                            </Link>
                             </div>
                             <CardMedia
                                 component="img"
@@ -115,6 +124,9 @@ export default function Noticias() {
                             <div id="noticia">
                             <h1>{contenido[2].[2]}</h1>
                             <p>{contenido[2].[3]}</p>
+                            <Link href={contenido[2].[4]} underline="none">
+                                <Button size="small">Descubre más</Button>
+                            </Link>
                             </div>
                             <CardMedia
                                 component="img"

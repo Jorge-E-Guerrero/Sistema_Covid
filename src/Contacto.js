@@ -84,45 +84,45 @@ const enviarDatos = async (url, data) => {
 
 export default function Register() {
 
-/*
-    const handleAsignacion = () => {
-        const data = {
-            dpi: dpi,
-            dosis: dosis_verificada
-        }
-        console.log(data);
-        enviarDatos(url_confirmacion, data);
-    };
-
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        // eslint-disable-next-line no-console
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-    };
-
-
-
-
-
-
-    const data = JSON.parse(localStorage.getItem('registro'));
-    const dpi = data.dpi;
-    const nombre = (data.nombre + ' ' + data.apellido);
-    const nacimiento = data.fecha_nacimiento;
-    const dosis_verificada = data.dosis;
-    const vacuna = data.vacuna;
-    const dosis1_fecha = data.dosis1_fecha;
-    const dosis2_fecha = data.dosis2_fecha;
-    const refuerzo_fecha = data.refuerzo_fecha;
-    const dosis1 = data.dosis1;
-    const dosis2 = data.dosis2;
-    const dosis3 = data.dosis3;
-*/
+    /*
+        const handleAsignacion = () => {
+            const data = {
+                dpi: dpi,
+                dosis: dosis_verificada
+            }
+            console.log(data);
+            enviarDatos(url_confirmacion, data);
+        };
+    
+    
+        const handleSubmit = (event) => {
+            event.preventDefault();
+            const data = new FormData(event.currentTarget);
+            // eslint-disable-next-line no-console
+            console.log({
+                email: data.get('email'),
+                password: data.get('password'),
+            });
+        };
+    
+    
+    
+    
+    
+    
+        const data = JSON.parse(localStorage.getItem('registro'));
+        const dpi = data.dpi;
+        const nombre = (data.nombre + ' ' + data.apellido);
+        const nacimiento = data.fecha_nacimiento;
+        const dosis_verificada = data.dosis;
+        const vacuna = data.vacuna;
+        const dosis1_fecha = data.dosis1_fecha;
+        const dosis2_fecha = data.dosis2_fecha;
+        const refuerzo_fecha = data.refuerzo_fecha;
+        const dosis1 = data.dosis1;
+        const dosis2 = data.dosis2;
+        const dosis3 = data.dosis3;
+    */
 
 
     return (
@@ -143,25 +143,50 @@ export default function Register() {
                     <Typography component="h1" variant="h5">
                         Comentarios
                     </Typography>
-                    <Box component="form" noValidate sx={{ mt: 1 , width: '80%'}}>
+                    <Box component="form" noValidate sx={{ mt: 1, width: '80%' }}>
 
-                            <TextField
-                                margin="normal"
-                                fullWidth
-                                multiline
-                                rows={15}
-                                id="comentario"
-                                
-                            />
-    
-           
+                        <TextField
+                            margin="normal"
+                            fullWidth
+                            label="Nombre"
+
+                        />
+                        <TextField
+                            margin="normal"
+                            fullWidth
+                            label="Email"
+
+                        />
+                        <TextField
+                        margin="normal"
+                        fullWidth
+                        label="Telefono"
+                        type="number"
+
+                        />
+                        <TextField
+                        margin="normal"
+                        fullWidth
+                        label="Asunto"
+
+                        />
+                        <TextField
+                            margin="normal"
+                            fullWidth
+                            multiline
+                            rows={15}
+                            id="comentario"
+
+                        />
+
+
 
                         <Button
-                            
+
                             type="submit"
-                            
+
                             variant="contained"
-                            sx={{ mt: 3, mb: 2, maxWidth: 500 , width: '90%'}}
+                            sx={{ mt: 3, mb: 2, maxWidth: 500, width: '90%' }}
                         >
                             Enviar
                         </Button>

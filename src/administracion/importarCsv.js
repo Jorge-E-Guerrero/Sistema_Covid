@@ -14,7 +14,7 @@ import Select from '@mui/material/Select';
 
 
 
-const url_cambiarAtributo = 'http://localhost/ws-login/cambiarAtributo.php';
+const url_cambiarAtributo = 'http://localhost/ws-login/guardarCsv.php';
 
 
 const enviarDatosAtributo = async (url, data) => {
@@ -33,7 +33,6 @@ const enviarDatosAtributo = async (url, data) => {
 
     const operacion = user.operacion;
     if (operacion == true) {
-        window.alert('Se ha operado correctamente');
         window.location.reload();
         //window.location.removeItem('CambioUsuario');
     } else {
@@ -43,7 +42,7 @@ const enviarDatosAtributo = async (url, data) => {
 
 
 
-export default function CambioAtributos() {
+export default function ImportarCsv() {
 
 
 
@@ -62,12 +61,12 @@ export default function CambioAtributos() {
             valor: valorAtributo.current.value
 
         }
-        
-        console.log(data);
+        const files = document.getElementById('import').files
+        console.log(files);
         
         if (refDPIUsuarioCambiar.current.value != '') {
             if(valorAtributo.current.value != '') {
-                enviarDatosAtributo(url_cambiarAtributo, data);
+                enviarDatosAtributo(url_cambiarAtributo, files);
             } else {
                 window.alert('Ingresa un valor')
             }
@@ -84,7 +83,7 @@ export default function CambioAtributos() {
 
         <div>
             <Typography component="h1" variant="h5">
-                Cambiar valores
+                Importar CSV
             </Typography>
             <Box component="form" noValidate sx={{ mt: 1 }}>
                 <Box component="form"
@@ -94,49 +93,22 @@ export default function CambioAtributos() {
                     noValidate
                     autoComplete="off"
                 >
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="dpi"
-                        label="DPI"
-                        name="dpi"
-                        autoComplete="dpi"
-                        autoFocus
-                        inputRef={refDPIUsuarioCambiar}
-                    />
-                    <FormControl sx={{ m: 1, minWidth: 300 }}>
-                        <InputLabel id="demo-simple-select-helper-label" >Atributo</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-helper-label"
-                            id="demo-simple-select-helper"
-                            value={selectedAtributo}
-                            label="Centro de Vacunacion"
-                            onChange={handleChangeAtributo}
-                        >
-                            <MenuItem value="">
-                                <em>None</em>
-                            </MenuItem>
-                            <MenuItem value='nombre'>Nombre</MenuItem>
-                            <MenuItem value='apellido'>Apellido</MenuItem>
-                            <MenuItem value='fecha_nacimiento'>Fecha de nacimiento</MenuItem>
-                            <MenuItem value='telefono'>Teléfono</MenuItem>
-                            <MenuItem value='email'>Email</MenuItem>
-                            <MenuItem value='enfermedad_cronica'>Enfermedad cronica</MenuItem>
-                            <MenuItem value='grupo'>Grupo prioritario</MenuItem>
+                
+                <span id="message" />
+                <iframe name="dummyframe" id="dummyframe" ></iframe>
+                <form method="post" action="http://localhost/ws-login/guardarCsv.php" id="sample_from" enctype="multipart/form-data" className="form-horizontal" target="dummyframe">
+                    <div className="form-group">
+        
+                        <label className="col-4md-4  control-laber">Selecciona el archivo .csv</label>
+                        <input type="file" name="file" id="file" accept=".csv" />    
+                    </div>
+                    <div className="form-group" >
+                        <input type="hidden" name="hidden_field" value="1" />
+                        <input type="submit" name="import" id="import" value="Import" className="btn btn-info" />
+                    </div>
+                </form>
 
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="valorAtributo"
-                        label="Valor"
-                        name="valorAtributo"
-                        autoFocus
-                        inputRef={valorAtributo}
-                    />
+
                     <Button
                         onClick={handleCambiarAtributo}
                         type="submit"
@@ -148,5 +120,6 @@ export default function CambioAtributos() {
                 </Box>
             </Box>
         </div>
+        
     );
 }

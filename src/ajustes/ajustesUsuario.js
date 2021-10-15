@@ -43,11 +43,13 @@ const enviarDatosAtributo = async (url, data) => {
 
 
 
-export default function CambioAtributos() {
+export default function AjustesUsuario() {
+
+    const data = JSON.parse(localStorage.getItem('info'));
+    const usuario = data.dpi;
+    console.log(usuario);
 
 
-
-    const refDPIUsuarioCambiar = React.useRef(null);
     const valorAtributo = React.useRef(null);
     const [selectedAtributo, setSelectedAtributo] = React.useState('');
 
@@ -57,7 +59,7 @@ export default function CambioAtributos() {
 
     const handleCambiarAtributo = () => {
         const data = {
-            dpi: refDPIUsuarioCambiar.current.value,
+            dpi: usuario,
             atributo: selectedAtributo,
             valor: valorAtributo.current.value
 
@@ -65,14 +67,10 @@ export default function CambioAtributos() {
         
         console.log(data);
         
-        if (refDPIUsuarioCambiar.current.value != '') {
-            if(valorAtributo.current.value != '') {
-                enviarDatosAtributo(url_cambiarAtributo, data);
-            } else {
-                window.alert('Ingresa un valor')
-            }
+        if(valorAtributo.current.value != '') {
+            enviarDatosAtributo(url_cambiarAtributo, data);
         } else {
-            window.alert('Ingresa un DPI');
+            window.alert('Ingresa un valor')
         }
         
     };
@@ -94,17 +92,7 @@ export default function CambioAtributos() {
                     noValidate
                     autoComplete="off"
                 >
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="dpi"
-                        label="DPI"
-                        name="dpi"
-                        autoComplete="dpi"
-                        autoFocus
-                        inputRef={refDPIUsuarioCambiar}
-                    />
+
                     <FormControl sx={{ m: 1, minWidth: 300 }}>
                         <InputLabel id="demo-simple-select-helper-label" >Atributo</InputLabel>
                         <Select
@@ -117,13 +105,9 @@ export default function CambioAtributos() {
                             <MenuItem value="">
                                 <em>None</em>
                             </MenuItem>
-                            <MenuItem value='nombre'>Nombre</MenuItem>
-                            <MenuItem value='apellido'>Apellido</MenuItem>
-                            <MenuItem value='fecha_nacimiento'>Fecha de nacimiento</MenuItem>
+
                             <MenuItem value='telefono'>Teléfono</MenuItem>
                             <MenuItem value='email'>Email</MenuItem>
-                            <MenuItem value='enfermedad_cronica'>Enfermedad cronica</MenuItem>
-                            <MenuItem value='grupo'>Grupo prioritario</MenuItem>
 
                         </Select>
                     </FormControl>

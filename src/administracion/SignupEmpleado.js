@@ -140,7 +140,7 @@ export default function Signup() {
     };
 
     
-    const baseURL = "http://localhost/ws-login/vacunas.php";
+    const baseURL = "http://localhost/ws-login/centros.php";
 
     const [post, setPost] = React.useState(['']);
     

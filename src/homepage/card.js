@@ -24,8 +24,8 @@ export default function MediaCard(props) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
+        <Button size="small">Comparte</Button>
+        <Button size="small">Descubre más</Button>
       </CardActions>
     </Card>
   );

@@ -6,7 +6,7 @@ import Login from './Login';
 import Signup from './Signup'
 import Home from './Home';
 import Register from './validacion/Register';
-import Aplicacion from './Aplicacion';
+import Aplicacion from './validacion/Aplicacion';
 import Confirmacion from './validacion/Confirmacion';
 import Contacto from './Contacto';
 import Proceso from './proceso/Proceso';
@@ -20,6 +20,7 @@ import Informacion from './informacion/Informacion';
 import Contenido from './contenido/Contenido';
 import Noticias from './noticias/Noticias';
 import Footer from './Footer';
+import Ajustes from './ajustes/Ajustes';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 
@@ -171,6 +172,12 @@ function App() {
         <Switch>
           <Route exact path='/Contenido'>
             <Contenido />
+          </Route>
+        </Switch>
+
+        <Switch>
+          <Route exact path='/Ajustes'>
+            <Ajustes />
           </Route>
         </Switch>
 

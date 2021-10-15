@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import SubirImagen from './subirImagen';
 import CambiarImagen from './cambiarImagen';
 import CambiarTexto from './cambiarTexto';
+import CambiarLinks from './cambiarLinks';
 
 
 
@@ -54,11 +55,11 @@ export default function Contenido() {
                 >
                 <SubirImagen />
                 <CambiarImagen />
+                <CambiarLinks />
                 <CambiarTexto />
 
                 </Box>
             </div>
-            <Copyright sx={{ mt: 8, mb: 4 }} />
         </Container>
     );
 }

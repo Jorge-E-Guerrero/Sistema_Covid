@@ -59,7 +59,6 @@ export default function Vacunas() {
 
                 </Box>
             </div>
-            <Copyright sx={{ mt: 8, mb: 4 }} />
         </Container>
     );
 }
