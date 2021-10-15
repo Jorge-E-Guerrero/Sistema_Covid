@@ -73,7 +73,6 @@ const enviarDatos = async (url, data) => {
 
     }
 
-    console.warn();
 
 
 
@@ -87,9 +86,7 @@ export default function Register() {
 
     const handleAsignacion = () => {
         const data = {
-            dpi: dpi,
-            dosis: dosis_verificada,
-            vacuna: vacuna
+            dpi: dpi
         }
         console.log(data);
         enviarDatos(url_confirmacion, data);
@@ -266,7 +263,7 @@ export default function Register() {
                     </Box>
                 </Box>
             </div>
-            <Copyright sx={{ mt: 8, mb: 4 }} />
+
         </Container>
     );
 }

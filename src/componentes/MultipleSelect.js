@@ -6,6 +6,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
+import axios from 'axios';
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -17,18 +19,12 @@ const MenuProps = {
   },
 };
 
-const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder',
-];
+
+
+
+
+
+
 
 function getStyles(name, personName, theme) {
   return {
@@ -43,6 +39,22 @@ export default function MultipleSelect() {
   const theme = useTheme();
   const [personName, setPersonName] = React.useState([]);
 
+
+  const baseURL = "http://localhost/ws-login/vacunas.php";
+
+  const [post, setPost] = React.useState(['']);
+  
+  console.log(post);
+ 
+  
+  
+  React.useEffect(() => {
+      axios.get(baseURL).then(response => {
+        setPost(response.data);
+      });
+  }, []);
+
+
   const handleChange = (event) => {
     const {
       target: { value },
@@ -53,8 +65,26 @@ export default function MultipleSelect() {
     );
   };
 
+
+  const names = [
+    'Oliver Hansen',
+    'Van Henry',
+    'April Tucker',
+    'Ralph Hubbard',
+    'Omar Alexander',
+    'Carlos Abbott',
+    'Miriam Wagner',
+    'Bradley Wilkerson',
+    'Virginia Andrews',
+    'Kelly Snyder',
+  ];
+  console.log(names);
+
+
+
   return (
     <div>
+      <h1> {post} abc 123</h1>
       <FormControl sx={{ m: 1, width: 400 }}>
         <InputLabel id="demo-multiple-name-label">Centros de vacunación</InputLabel>
         <Select
@@ -66,7 +96,7 @@ export default function MultipleSelect() {
           input={<OutlinedInput label="Name" />}
           MenuProps={MenuProps}
         >
-          {names.map((name) => (
+          {post.map((name) => (
             <MenuItem
               key={name}
               value={name}

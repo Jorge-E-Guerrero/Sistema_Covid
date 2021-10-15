@@ -16,8 +16,8 @@ import Container from '@mui/material/Container';
 //import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 //import { useParams } from 'react-router-dom';
-
-import MultipleSelect from './MultipleSelect';
+import axios from 'axios';
+import MultipleSelect from '../componentes/MultipleSelect';
 
 
 function Copyright(props) {
@@ -86,7 +86,12 @@ export default function Register() {
             vacuna: selectedVacuna
         }
         console.log(data);
-        enviarDatos(url_asignacion, data);
+        if(selectedVacuna != ''){
+            enviarDatos(url_asignacion, data);
+        } else {
+            window.alert('No se ha asignado vacuna');
+        }
+        
     };
     
     
@@ -112,7 +117,20 @@ export default function Register() {
     const data = JSON.parse(localStorage.getItem('registro'));
     const dpi = data.dpi;
     const nombre = (data.nombre + ' ' + data.apellido);
+    
 
+
+    const baseURL = "http://localhost/ws-login/vacunasTotales.php";
+
+    const [post, setPost] = React.useState(['']);
+    
+    console.log(post);
+
+    React.useEffect(() => {
+        axios.get(baseURL).then(response => {
+          setPost(response.data);
+        });
+    }, []);
 
 
     return (
@@ -164,13 +182,11 @@ export default function Register() {
                                 <MenuItem value="">
                                     <em>None</em>
                                 </MenuItem>
-                                <MenuItem value='Pfizer'>Pfizer</MenuItem>
-                                <MenuItem value='Moderna'>Moderna</MenuItem>
-                                <MenuItem value='Aztrazeneca'>Aztrazeneca</MenuItem>
-                                <MenuItem value='Janssen'>Janssen</MenuItem>
-                                <MenuItem value='Sinopharm'>Sinopharm</MenuItem>
-                                <MenuItem value='Sinovac'>Sinovac</MenuItem>
-                                <MenuItem value='Sputnik'>Sputnik</MenuItem>
+                                {post.map((name) => (
+                                    <MenuItem value={name}>
+                                      {name}
+                                    </MenuItem>
+                                  ))}
                             </Select>
                         </FormControl>
 
@@ -186,7 +202,7 @@ export default function Register() {
                     </Box>
                 </Box>
             </div>
-            <Copyright sx={{ mt: 8, mb: 4 }} />
+
         </Container>
     );
 }

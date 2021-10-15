@@ -1,0 +1,61 @@
+@mixin imagenes {
+    width: 100%;
+    max-width: 50%;
+    min-width: 250px;
+    border-radius: 50px;
+    border-color: #005c5c;
+    border-width: 2px;
+    border-style: solid;
+    object-fit:contain;
+    
+
+    margin: auto;
+    float: left;
+    position:unset;
+    
+
+
+}
+
+
+#imagen {
+     @include imagenes();
+}
+
+
+
+#noticia {
+    
+    width: 45%;
+    min-width: 250px;
+    
+    float: left;
+    padding-left: 10px;
+    margin-right: auto;
+    margin: 10px;
+    margin-left: auto;
+    margin: auto;
+
+
+
+}
+
+#divContenido{
+    
+    width: fit-content;
+    border-width: 5px;
+    border-color: #005c5c;
+    background:lightblue;
+    border-style: solid;
+    align-items: center;
+    display:flex; 
+    flex-wrap: wrap-reverse;
+    
+    
+    
+  }
+
+  #footerPadding {
+      padding-bottom: 20px;
+      padding-top: 40px;
+  }

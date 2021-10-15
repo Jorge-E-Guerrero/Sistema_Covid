@@ -20,6 +20,14 @@ code {
   padding-right: 10px;
 }
 
+.form2 {
+  background-color: #00fff9;
+  width: min-content;
+  border-radius: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 html {
   background-color: #0080ff;
 }
