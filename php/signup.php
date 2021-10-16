@@ -34,7 +34,21 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 
 	if ($mysqli->query($sql) == TRUE) {
-		echo json_encode(array('conectado'=>true ,'dpi'=>$dpi, 'nombre'=>$nombre,  'apellido'=>$apellido, 'fecha_nacimiento'=>$fecha_nacimiento, 'tipo_usuario'=>$tipo_usuario ) );
+		if ($nueva_consulta = $mysqli->prepare("SELECT 
+		*
+		FROM usuario
+		WHERE dpi = ?")) {
+        $nueva_consulta->bind_param('s', $dpi);
+        $nueva_consulta->execute();
+        $resultado = $nueva_consulta->get_result();
+			if ($resultado->num_rows == 1) {
+			echo json_encode(array('conectado'=>true ,'dpi'=>$dpi, 'nombre'=>$nombre,  'apellido'=>$apellido, 'fecha_nacimiento'=>$fecha_nacimiento, 'tipo_usuario'=>$tipo_usuario ) );
+			} else {
+				echo  json_encode(array('length'=>'0', 'error'=>true)) ;
+			}
+		} else {
+			echo  json_encode(array('length'=>'0', 'error'=>true)) ;
+		}
 	} else {
 		echo  json_encode(array('length'=>'0', 'error'=>true)) ;
 	}

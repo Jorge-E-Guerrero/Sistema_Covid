@@ -15,13 +15,12 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 	
 	$dpi = $dataObject-> dpi;
-	$dosis = $dataObject-> dosis;
-	$vacuna = $dataObject-> vacuna;
+
 	
 
 
 
-	$sql = "CALL confirmar_dosis( '$dpi', '$dosis', '$vacuna')";
+	$sql = "CALL confirmar_dosis( '$dpi')";
 
 
 	if ($mysqli->query($sql) == TRUE) {
