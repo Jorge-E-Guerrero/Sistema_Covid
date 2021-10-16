@@ -28,8 +28,9 @@ const enviarEditarDisponibilidad = async (url, data) => {
     window.alert('');
     const user = json;
 
-    const operacion = user.operacion;
+    const operacion = user.confirmacion;
     if (operacion == true) {
+        window.alert('Se ha operado correctamente');
         window.location.reload();
     } else {
         window.alert('Error');
