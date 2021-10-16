@@ -120,7 +120,7 @@ export default function Register() {
     
 
 
-    const baseURL = "http://localhost/ws-login/vacunasTotales.php";
+    const baseURL = "http://localhost/ws-login/vacunasDisponibles.php";
 
     const [post, setPost] = React.useState(['']);
     
