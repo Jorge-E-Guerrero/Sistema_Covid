@@ -3,7 +3,7 @@ select * from usuario;
 
 
 
-
+select * from confirmacion;
 
 drop procedure borrar_usuario;
 Create procedure borrar_usuario(in dpi_x bigint(13))
@@ -21,7 +21,7 @@ begin
 end;
 call borrar_usuario(123);
 
-
+select * from grupo_prioritario;
 
 drop procedure registro;
 
@@ -40,10 +40,31 @@ create PROCEDURE registro(in dpi_x bigint(13),
 begin
     declare new_enfermedad int(11);
     declare new_grupo int(11);
+    declare bool_enfermedad tinyint(1);
+    declare bool_grupo tinyint(1);
+    declare edad date;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+      rollback;
+    END;
+    
     start transaction;
+    
+    select * into edad from edad_registro;
+    
+    if enfermedad_x != '' then
+      select registro into bool_enfermedad from catalogo_enfermedad where enfermedad_cronica = enfermedad_x;
+    else
+      set bool_enfermedad = false;
+    end if;
+    
+    if grupo_x != '' then
+      select registro into bool_grupo from catalogo_grupo where grupo = grupo_x;
+    else
+      set bool_grupo = false;
+    end if;
 
-
-
+    if edad > fecha_nacimiento_x or bool_enfermedad = true or bool_grupo = true then
     insert into usuario (dpi ,clave, nombre, apellido, fecha_nacimiento, tipo_usuario) 
     
     values (
@@ -75,7 +96,7 @@ begin
     values (
       dpi_x,
       '',
-      DATE_ADD(now() , INTERVAL 10 day),
+      '',
       '',
       ''
     );
@@ -91,32 +112,113 @@ begin
     );
     
     if enfermedad_x != '' then
-    
-    select count(id_enfermedad) from enfermedad into new_enfermedad;
-    set new_enfermedad = new_enfermedad + 1;
-    insert into enfermedad (id_enfermedad, dpi, enfermedad_cronica ) 
+    insert into enfermedad (dpi, enfermedad_cronica ) 
     values (
-      new_enfermedad,
       dpi_x,
       enfermedad_x
     );
     end if;
     
     if grupo_x != '' then
-    
-    select count(id_grupo) from grupo_prioritario into new_grupo;
-    set new_grupo = new_grupo + 1;
-    insert into grupo_prioritario (id_grupo, dpi, grupo ) 
+    insert into grupo_prioritario (dpi, grupo ) 
     values (
-      new_grupo,
       dpi_x,
       grupo_x
+      
+      
     );
+    end if;
     end if;
     commit;
   
 end;
 
+
+
+
+commit;
+
+CREATE TRIGGER cola_vacuna BEFORE 
+INSERT ON usuario 
+ 	FOR EACH ROW
+ BEGIN
+    INSERT INTO cola_vacuna (dpi, fecha_registro) 
+    VALUES (NEW.dpi , now());
+ END;
+ 
+ 
+ create trigger import_csv after
+ insert on data_cvs
+  for each row
+ Begin
+    insert into usuario (dpi ,clave, nombre, apellido, fecha_nacimiento, tipo_usuario) 
+    
+    values (
+      New.dpi,
+      New.clave,
+      New.nombre,
+      New.apellido,
+      New.fecha_nacimiento,
+      New.tipo_usuario
+    );
+    
+    insert into centro_vacunacion (dpi , centro ) 
+    
+    values (
+      New.dpi,
+      New.centro
+    );
+    
+    insert into contacto (dpi , telefono, email ) 
+    
+    values (
+      New.dpi,
+      New.telefono,
+      New.email
+    );
+
+    insert into vacuna( dpi, vacuna, dosis1_fecha, dosis2_fecha, refuerzo_fecha)
+    
+    values (
+      New.dpi,
+      '',
+      '',
+      '',
+      ''
+    );
+    
+    
+    insert into historial( dpi, dosis1, dosis2, dosis3 )
+    
+    values (
+      New.dpi,
+      false,
+      false,
+      false
+    );
+    
+    if New.enfermedad != '' then
+    insert into enfermedad (dpi, enfermedad_cronica ) 
+    values (
+      New.dpi,
+      New.enfermedad
+    );
+    end if;
+    
+    if New.grupo != '' then
+    insert into grupo_prioritario (dpi, grupo ) 
+    values (
+      New.dpi,
+      New.grupo
+      
+      
+    );
+    end if;
+ end;
+ 
+ 
+ delete from cola_vacuna;
+ 
 
 rollback;
 select * from vacuna;
@@ -127,7 +229,7 @@ select * from grupo_prioritario;
 
 select  date(now());
 
-call registro('125558','clave123','agusto','perez','2000-1-31','1','123456','prueba@gmail.com','UNIS','abc','maestro');
+call registro('11112','clave123','agusto','perez','2000-1-31','1','123456','prueba@gmail.com','CAMIP 1','Alheimer','Residentes');
 
 update usuario set fecha_nacimiento = '2000-8-21';
 update vacuna set dosis1_fecha = now() where dpi = 1234567 ;
@@ -139,8 +241,8 @@ inner join centro_vacunacion c on u.dpi = c.dpi
 where ( v.dosis1_fecha = date(now()) or v.dosis2_fecha = date(now()) or
 v.refuerzo_fecha =  date(now())) and u.dpi = '125558' and c.centro = 'unis';
 
-
-
+select * from confirmacion;
+commit;
 drop procedure asignacion_dosis;
 
 create procedure asignacion_dosis(in dpi_x bigint(13),
@@ -148,16 +250,20 @@ create procedure asignacion_dosis(in dpi_x bigint(13),
                           )
 begin
   start transaction;
+  
+  
+  update vacuna set vacuna = dosis where dpi = dpi_x;
+  /*
     if dosis = 'Pfizer' then
       update vacuna set vacuna = dosis where dpi = dpi_x;
       update vacuna set dosis2_fecha = DATE_ADD(now() , INTERVAL 21 day) where dpi = dpi_x;
-      /*update vacuna set refuerzo_fecha = DATE_ADD(DATE_ADD(now() , INTERVAL 21 day) , INTERVAL 8 MONTH) where dpi = dpi_x;*/
+      update vacuna set refuerzo_fecha = DATE_ADD(DATE_ADD(now() , INTERVAL 21 day) , INTERVAL 8 MONTH) where dpi = dpi_x;
     end if;
     
     if dosis = 'Moderna' then
       update vacuna set vacuna = dosis where dpi = dpi_x;
       update vacuna set dosis2_fecha = DATE_ADD(now() , INTERVAL 28 day) where dpi = dpi_x;
-      /*update vacuna set refuerzo_fecha = DATE_ADD(DATE_ADD(now() , INTERVAL 28 day) , INTERVAL 8 MONTH) where dpi = dpi_x;*/
+      update vacuna set refuerzo_fecha = DATE_ADD(DATE_ADD(now() , INTERVAL 28 day) , INTERVAL 8 MONTH) where dpi = dpi_x;
     end if;
     if dosis = 'Aztrazeneca' then
       update vacuna set vacuna = dosis where dpi = dpi_x;
@@ -178,6 +284,7 @@ begin
       update vacuna set vacuna = dosis where dpi = dpi_x;
       update vacuna set dosis2_fecha = DATE_ADD(now() , INTERVAL 21 day) where dpi = dpi_x;
     end if;
+    */
     commit;
 end;
 
@@ -200,11 +307,47 @@ select * from confirmacion where dpi = 66666   and (dosis1_fecha between now() a
                                                or dosis2_fecha between now() and DATE_ADD(now() , INTERVAL 7 day)
                                                or refuerzo_fecha between now() and DATE_ADD(now() , INTERVAL 7 day));
 
+
+
 drop procedure confirmar_dosis;
 
-create procedure confirmar_dosis(dpi_x bigint(13),dosis_num varchar(60), vacuna_x varchar(60))
+select * from vacuna;
+select * from catalogo_vacuna;
+select * from historial;
+
+create procedure confirmar_dosis(dpi_x bigint(13))
 begin
+  declare vacuna_x varchar(60);
+  declare ndosis_x int(11);
+  declare dias1_x int(11);
+  declare dias2_x int(11);
+  declare dosis1_x tinyint(1);
+  declare dosis2_x tinyint(1);
+  declare dosis3_X tinyint(1);
    start transaction;
+   
+    select vacuna into vacuna_x FROM vacuna where dpi = dpi_x;
+    select ndosis,tiempo_dosis2,tiempo_dosis3 into ndosis_x,dias1_x,dias2_x from catalogo_vacuna where vacuna = vacuna_x;
+    select dosis1,dosis2,dosis3 into dosis1_x,dosis2_x,dosis3_x from historial where dpi = dpi_x;
+    if dosis1_x = false then
+      if ndosis_x > '1' then
+        update vacuna set dosis2_fecha = date_add(now(), interval dias1_x day) where dpi = dpi_x;
+      end if;
+      update historial set dosis1 = true where dpi = dpi_x;
+      
+    elseif dosis2_x = false then
+      if ndosis_x = '3' then
+        update vacuna set refuerzo_fecha = date_add(now(), interval dias2_x day) where dpi = dpi_x;
+      end if;
+      update historial set dosis2 = true where dpi = dpi_x;
+      
+    elseif dosis3_x = false then
+      update historial set dosis3 = true where dpi = dpi_x;
+    end if;
+   
+   
+   
+   /*
     if dosis_num = 'dosis1_fecha' then 
       update historial set dosis1 = true where dpi = dpi_x;
     end if;
@@ -220,11 +363,12 @@ begin
     if dosis_num = 'refuerzo_fecha' then 
       update historial set dosis3 = true where dpi = dpi_x;
     end if;
+    */
    commit;
 end;
 
-
-call confirmar_dosis( 123456, 'dosis1_fecha','Moderna');
+rollback;
+call confirmar_dosis( 10101);
 
 
 
@@ -287,3 +431,537 @@ select * from confirmacion;
 select * from centro_vacunacion;
 commit;
 select * from usuario;
+
+select * from confirmacion;
+
+
+
+
+select u.dpi, u.nombre, u.apellido, u.fecha_nacimiento , v.* , c.* from usuario u 
+  inner join vacuna v on u.dpi = v.dpi 
+  inner join centro_vacunacion c on u.dpi = c.dpi  
+  where ( (v.dosis1_fecha between date(now()) and DATE_ADD(now() , INTERVAL 7 day)) 
+          or (v.dosis2_fecha between date(now()) and DATE_ADD(now() , INTERVAL 7 day)) 
+          or (v.refuerzo_fecha between date(now()) and DATE_ADD(now() , INTERVAL 7 day)) )
+;
+  
+  
+drop procedure cambio_atributos;
+create procedure cambio_atributos(in dpi_x bigint(13),
+                                in atributo varchar(60),
+                                in valor varchar(80))
+Begin
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  begin
+    rollback;
+  end;
+  start transaction;
+
+  if atributo = 'nombre' then
+   update usuario set nombre = valor where dpi = dpi_x;
+  elseif atributo = 'apellido' then
+   update usuario set apellido = valor where dpi = dpi_x;
+  elseif atributo = 'fecha_nacimiento' then
+   update usuario set fecha_nacimiento = STR_TO_DATE(valor,'%d/%m/%Y') where dpi = dpi_x;
+  elseif atributo = 'telefono' then
+   update contacto set telefono = valor where dpi = dpi_x;
+  elseif atributo = 'email' then
+   update contacto set email = valor where dpi = dpi_x;
+  elseif atributo = 'enfermedad_cronica' then
+   update enfermedad set enfermedad_cronica = valor where dpi = dpi_x;
+  elseif atributo = 'grupo' then
+   update grupo_prioritario set grupo = valor where dpi = dpi_x;
+  end if;
+  
+  
+  commit;
+  
+  
+  
+  
+end;
+rollback;
+
+commit;
+select * from usuario;
+select * from grupo_prioritario;
+
+call cambio_atributos( 123, 'feimiet' , '21/12/2000');
+
+
+/*
+
+  if atributo = 'nombre' then
+   update usuario set nombre = valor where dpi = dpi_x;
+  end if; 
+  if atributo = 'apellido' then
+   update usuario set apellido = valor where dpi = dpi_x;
+  end if;
+  if atributo = 'fecha_nacimiento' then
+   update usuario set fecha_nacimiento = valor where dpi = dpi_x;
+  end if;
+  if atributo = 'telefono' then
+   update contacto set telefono = valor where dpi = dpi_x;
+  end if;
+  if atributo = 'email' then
+   update contacto set email = valor where dpi = dpi_x;
+  end if;
+  if atributo = 'enfermedad_cronica' then
+   update enfermedad set enfermedad_cronica = valor where dpi = dpi_x;
+  end if;
+  
+  if atributo = 'grupo' then
+   update grupo_prioritario set grupo = valor where dpi = dpi_x;
+  end if;
+
+*/
+
+select * from usuario;
+
+
+
+
+
+
+
+drop procedure nuevo_centro;
+
+create procedure nuevo_centro(in centro_x varchar(80),
+                              in disponible_x varchar(10),
+                              in dias int(11),
+                              in capacidad int(11))
+                              
+Begin
+  start transaction;
+  if disponible_x = 'Si' then
+    INSERT INTO catalogo_centro (Centro, disponible, dias_asignacion, capacidad_diaria)
+    VALUES (
+      centro_x,
+      true,
+      dias,
+      capacidad
+      );
+    elseif disponible_x = 'No' then
+    INSERT INTO catalogo_centro (Centro, disponible, dias_asignacion, capacidad_diaria)
+    VALUES (
+      centro_x,
+      false,
+      dias,
+      capacidad
+      );
+    end if;
+    commit;
+  
+end;
+
+commit;
+
+select * FROM catalogo_centro;
+call nuevo_centro('CAMIP 1', 'Si' , '10', '80');
+
+
+select Centro FROM catalogo_centro where disponible = true;
+
+
+select * from vacuna;
+update vacuna set vacuna = 'Moderna';
+
+drop procedure editar_disponibilidad;
+
+create procedure editar_disponibilidad(in centro_x varchar(80),
+                               in disponibilidad varchar(10))
+Begin
+
+  start transaction;
+  
+    if disponibilidad = 'Si' then
+      update catalogo_centro set disponible = true where Centro = centro_x;
+    elseif disponibilidad = 'No' then 
+      update catalogo_centro set disponible = false where Centro = centro_x;
+    end if;
+  commit;
+end;
+commit;
+select * from catalogo_centro;
+
+call editar_disponibilidad('CAMIP 1', 'Si');
+
+
+drop procedure editar_centro;
+
+create procedure editar_centro(in centro_x varchar(80),
+                               in campo varchar(10),
+                               in valor int(11))
+Begin
+
+  start transaction;
+  
+    if campo = 'dias' then
+      update catalogo_centro set dias_asignacion = valor where Centro = centro_x;
+    elseif campo = 'capacidad' then 
+      update catalogo_centro set capacidad_diaria = valor where Centro = centro_x;
+    end if;
+  commit;
+end;
+commit;
+select * from catalogo_centro;
+
+call editar_centro('CAMIP 1', 'capacidad', '90');
+
+
+
+
+
+
+
+
+drop procedure crear_vacuna;
+
+create procedure crear_vacuna(in vacuna_x varchar(60),
+                               in disponible_x varchar(10),
+                               in ndosis int(11),
+                               in diasDosis2 int(11),
+                               in diasDosis3 int(11))
+Begin
+
+  start transaction;
+  
+      if disponible_x = 'Si' then
+    INSERT INTO catalogo_vacuna (vacuna, disponibilidad, ndosis, tiempo_dosis2, tiempo_dosis3)
+    VALUES (
+      vacuna_x,
+      true,
+      ndosis,
+      diasDosis2,
+      diasDosis3
+      );
+    elseif disponible_x = 'No' then
+    INSERT INTO catalogo_vacuna (vacuna, disponibilidad, ndosis, tiempo_dosis2, tiempo_dosis3)
+    VALUES (
+      vacuna_x,
+      false,
+      ndosis,
+      diasDosis2,
+      diasDosis3
+      );
+    end if;
+  commit;
+end;
+commit;
+select * from catalogo_vacuna;
+
+call crear_vacuna('Moderna', 'Si', '3', '21','120');
+
+
+
+
+
+
+drop procedure disponibilidad_vacuna;
+
+create procedure disponibilidad_vacuna(in vacuna_x varchar(60),
+                               in disponibilidad varchar(10))
+Begin
+
+  start transaction;
+  
+    if disponibilidad = 'Si' then
+      update catalogo_vacuna set disponibilidad = true where vacuna = vacuna_x;
+    elseif disponibilidad = 'No' then 
+      update catalogo_vacuna set disponibilidad = false where vacuna = vacuna_x;
+    end if;
+  commit;
+end;
+
+
+select * from catalogo_vacuna;
+
+call disponibilidad_vacuna('Moderna', 'Si');
+
+
+
+
+
+
+
+drop procedure editar_vacuna;
+
+create procedure editar_vacuna(in vacuna_x varchar(60),
+                               in campo varchar(10),
+                               in valor int(11))
+Begin
+
+  start transaction;
+  
+    if campo = 'ndosis' then
+      update catalogo_vacuna set ndosis = valor where vacuna = vacuna_x; 
+    elseif campo = 'dosis2' then 
+      update catalogo_vacuna set tiempo_dosis2 = valor where vacuna = vacuna_x;
+    elseif campo = 'dosis3' then 
+      update catalogo_vacuna set tiempo_dosis3 = valor where vacuna = vacuna_x;
+    end if;
+  commit;
+end;
+commit;
+select * from catalogo_vacuna;
+
+call editar_vacuna('Moderna', 'ndosis', '3');
+
+
+
+
+
+
+
+
+
+
+
+select v.dpi, v.fecha_registro, c.centro FROM cola_vacuna v join centro_vacunacion c on v.dpi = c.dpi order by c.centro asc, v.fecha_registro asc;
+
+select dpi, fecha_registro, centro FROM cola_centro;
+
+
+drop procedure asignar_fecha;
+
+create procedure asignar_fecha()
+begin
+  declare done boolean default false;
+  declare a bigint(13) default 0;
+  declare b datetime default '';
+  declare c varchar(80) default '';
+  declare centro_anterior varchar(80) default '';
+  declare capacidad_x int default '';
+  declare dias_x int default '';
+  declare contador1 int;
+  declare contador2 int;
+  declare curl cursor for select dpi, fecha_registro, centro FROM cola_centro;
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+  start transaction;
+  
+  open curl;
+    read_loop: loop
+      fetch curl into a,b,c;
+      if done then 
+        leave read_loop;
+      end if;
+      if c != centro_anterior then
+          set centro_anterior = c;
+          select dias_asignacion, capacidad_diaria into dias_x,capacidad_x FROM catalogo_centro where centro = c;
+          set contador1 = 1;
+          set contador2 = 0;
+          update vacuna set dosis1_fecha = DATE_ADD( now() , INTERVAL (dias_x + contador2) DAY) where dpi = a; 
+      else 
+          if contador1 > capacidad_x then
+            set contador2 = contador2 + 1;
+          end if;
+          update vacuna set dosis1_fecha = DATE_ADD( now(), INTERVAL (dias_x + contador2) DAY) where dpi = a;
+      end if;
+
+      
+      set contador1 = contador1 + 1;
+        
+    end loop read_loop;
+  close curl;
+  
+  commit;
+
+end;
+
+call asignar_fecha();
+
+select * from cola_centro;
+select * from cola_vacuna;
+
+select dias_asignacion, capacidad_diaria FROM catalogo_centro;
+
+commit;
+
+select * from vacuna;
+
+
+
+
+
+drop procedure registro_enfermedad;
+
+create procedure registro_enfermedad( in enfermedad_x varchar(80),
+                                      in valor varchar(10))
+Begin
+  start transaction;
+    if valor = 'Si' then 
+      update catalogo_enfermedad set registro = true where enfermedad_cronica = enfermedad_x;
+    elseif valor = 'No' then 
+      update catalogo_enfermedad set registro = false where enfermedad_cronica = enfermedad_x;
+    end if;
+  commit;
+end;
+
+select * from catalogo_enfermedad;
+
+call registro_enfermedad('Alzheimer','Si');
+
+
+
+drop procedure registro_grupo;
+
+create procedure registro_grupo( in grupo_x varchar(80),
+                                      in valor varchar(10))
+Begin
+  start transaction;
+    if valor = 'Si' then 
+      update catalogo_grupo set registro = true where grupo = grupo_x;
+    elseif valor = 'No' then 
+      update catalogo_grupo set registro = false where grupo = grupo_x;
+    end if;
+  commit;
+end;
+
+select * from catalogo_grupo;
+
+call registro_enfermedad('Alzheimer','Si');
+
+
+
+
+drop procedure registro_fecha;
+
+create procedure registro_fecha( in fecha_x varchar(80))
+Begin
+  DECLARE EXIT HANDLER FOR SQLEXCEPTION
+  BEGIN
+    rollback;
+  END;
+
+  start transaction;
+    update edad_registro set fecha = STR_TO_DATE( fecha_x ,'%d/%m/%Y');
+  commit;
+end;
+
+select * from edad_registro;
+
+call registro_fecha('21/08/2000');
+
+rollback;
+
+
+select * from enfermedad;
+select * from vacuna;
+select count(*) , e.enfermedad_cronica from historial h inner join enfermedad e on h.dpi = e.dpi  where h.dosis1 = true and e.enfermedad_cronica = 'Alzheimer'  group by e.enfermedad_cronica;
+
+
+
+drop function porcentaje_enfermedad; 
+
+CREATE FUNCTION porcentaje_enfermedad( enfermedad_x varchar(80), dosis_x varchar(30)) RETURNS varchar(100)
+BEGIN
+declare total int(11);
+declare division float;
+declare texto varchar(100);
+
+  select count(*) into total from usuario;
+  if dosis_x = 'dosis1' then 
+    select ((count(*)/total)*100) into division from historial h inner join enfermedad e on h.dpi = e.dpi  where h.dosis1 = true and e.enfermedad_cronica = enfermedad_x  group by e.enfermedad_cronica;
+    set texto = ifnull(concat( enfermedad_x, ': ',division,'%'),concat( enfermedad_x, ': 0.00%'));
+  elseif dosis_x = 'dosis2' then 
+    select ((count(*)/total)*100) into division from historial h inner join enfermedad e on h.dpi = e.dpi  where h.dosis2 = true and e.enfermedad_cronica = enfermedad_x  group by e.enfermedad_cronica;
+    set texto = ifnull(concat( enfermedad_x, ': ',division,'%'),concat( enfermedad_x, ': 0.00%'));
+  elseif dosis_x = 'dosis3' then 
+    select ((count(*)/total)*100) into division from historial h inner join enfermedad e on h.dpi = e.dpi  where h.dosis3 = true and e.enfermedad_cronica = enfermedad_x  group by e.enfermedad_cronica;
+    set texto = ifnull(concat( enfermedad_x, ': ',division,'%'),concat( enfermedad_x, ': 0.00%'));
+  end if;
+	
+	RETURN texto;
+END;
+
+
+select enfermedad_cronica , porcentaje_enfermedad(enfermedad_cronica,'dosis1') as porcentaje from  catalogo_enfermedad order by enfermedad_cronica;
+
+commit;
+
+SELECT IFNULL(1/0, "W3Schools.com");
+
+select DATE_FORMAT(fecha, "%e/%m/%Y") as fecha from edad_registro;
+
+insert into contenido (
+   elemento
+  ,url_imagen
+  ,titulo
+  ,contenido
+) VALUES (
+   ''  -- elemento - IN varchar(255)
+  ,''  -- url_imagen - IN varchar(255)
+  ,''  -- titulo - IN varchar(255)
+  ,''  -- contenido - IN text
+);
+
+select * from contenido;
+
+rollback;
+
+drop procedure insertar_imagen;
+
+create procedure insertar_imagen(in url_x varchar(255))
+begin
+  start transaction;
+    insert into imagenes (
+       nombre_imagen
+    ) VALUES (
+       url_x
+    );
+  commit;
+end;
+
+rollback;
+commit;
+
+drop procedure cambiar_imagen;
+
+create procedure cambiar_imagen(in elemento_x varchar(255),
+                    in imagen_x varchar(255))
+begin
+  start transaction;
+    update contenido set nombre_imagen = imagen_x where elemento = elemento_x;
+  commit;
+end;
+
+
+
+drop procedure cambiar_imagen;
+
+create procedure cambiar_link(in elemento_x varchar(255),
+                    in link_x varchar(255))
+begin
+  start transaction;
+    update contenido set url = link_x where elemento = elemento_x;
+  commit;
+end;
+
+
+drop procedure cambiar_texto;
+
+create procedure cambiar_texto(in elemento_x varchar(255),
+                               in titulo_x varchar(255),
+                               in texto_x text)
+begin
+  start transaction;
+    update contenido set titulo = titulo_x where elemento = elemento_x ;
+    update contenido set contenido = texto_x  where elemento = elemento_x;
+  commit;
+end;
+
+select * from contenido;
+
+commit;
+
+select u.dpi, u.nombre, u.apellido, u.fecha_nacimiento , v.* , c.* from usuario u 
+  inner join vacuna v on u.dpi = v.dpi 
+  inner join centro_vacunacion c on u.dpi = c.dpi  
+  where ( v.dosis1_fecha between date(now()) and DATE_ADD(now() , INTERVAL 7 day) 
+          or v.dosis2_fecha between date(now()) and DATE_ADD(now() , INTERVAL 7 day) 
+          or v.refuerzo_fecha between date(now()) and DATE_ADD(now() , INTERVAL 7 day) );
+          
+          
+          select * from confirmacion where vacuna != '';
+          rollback;

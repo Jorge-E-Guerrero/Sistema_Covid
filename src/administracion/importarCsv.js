@@ -107,16 +107,6 @@ export default function ImportarCsv() {
                         <input type="submit" name="import" id="import" value="Import" className="btn btn-info" />
                     </div>
                 </form>
-
-
-                    <Button
-                        onClick={handleCambiarAtributo}
-                        type="submit"
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
-                    >
-                        Cambiar valores
-                    </Button>
                 </Box>
             </Box>
         </div>

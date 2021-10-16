@@ -68,7 +68,7 @@ export default function Menu() {
             </List>
             <Divider />
             <List>
-                { usuario === '1' &&
+                { usuario === 1 &&
                     ['Ajustes','Proceso'].map((text, index) => (
                         <ListItem button key={text} component={Link} to={'/' + text} >
 

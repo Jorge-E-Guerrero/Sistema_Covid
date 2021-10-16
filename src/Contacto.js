@@ -174,6 +174,7 @@ export default function Register() {
                             margin="normal"
                             fullWidth
                             multiline
+                            label="Comentario"
                             rows={15}
                             id="comentario"
 

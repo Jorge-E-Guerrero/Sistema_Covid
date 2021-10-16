@@ -37,7 +37,7 @@ $method = $_SERVER['REQUEST_METHOD'];
                 $datos = $resultado->fetch_assoc();
                 $_SESSION['dpi'] = $datos['dpi'];
                 echo json_encode(array('registrado'=>true,'dpi'=>$datos['dpi'], 'nombre'=>$datos['nombre'],  'apellido'=>$datos['apellido'], 
-                'fecha_nacimiento'=>$datos['fecha_nacimiento'], 'dosis'=>'dosis1_fecha',
+                'fecha_nacimiento'=>$datos['fecha_nacimiento'],
                 'vacuna'=>$datos['vacuna'],'dosis1_fecha'=>$datos['dosis1_fecha'], 
                 'dosis2_fecha'=>$datos['dosis2_fecha'] ,
                 'refuerzo_fecha'=>$datos['refuerzo_fecha'],'dosis1'=>$datos['dosis1'],
@@ -59,39 +59,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 	{
 		echo  json_encode(array('length'=>'0', 'error'=>true)) ;
 	}
-/*
-	echo $password;
-	echo "<br/>";
-	echo $clave;
-	echo "<hr/>";
-*/	
-/*
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
-*/
-/*
-if ($sql = $mysqli->prepare("CALL registro('$dpi','$clave','$nombre','$apellido','$fecha_nacimiento','$tipo_usuario','$telefono','$email','$centro','$enfermedad','$grupo')")){
-	$sql->execute();
-	
-	
-} else {
-	echo  json_encode(array('error'=>'error')) ;
-}
-*/
-/*
-echo json_encode(array('conectado'=>true) );	
-*/
-//echo json_encode(array('conectado'=>true ,'dpi'=>$dpi, 'nombre'=>$nombre,  'apellido'=>$apellido, 'fecha_nacimiento'=>$fecha_nacimiento, 'tipo_usuario'=>$tipo_usuario ) );
 
-/*
-
-if ($method == 'POST') {
-	echo json_encode(array('conectado'=>true ,'dpi'=>$dpi, 'nombre'=>$nombre,  'apellido'=>$apellido, 'fecha_nacimiento'=>$fecha_nacimiento, 'tipo_usuario'=>$tipo_usuario ) );
-} else {
-	echo mysqli_affected_rows($con);
-}
-*/
 
 
 
