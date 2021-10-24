@@ -21,6 +21,7 @@ import Contenido from './contenido/Contenido';
 import Noticias from './noticias/Noticias';
 import Footer from './Footer';
 import Ajustes from './ajustes/Ajustes';
+import Reportes from './reportes/Reportes';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 
@@ -178,6 +179,12 @@ function App() {
         <Switch>
           <Route exact path='/Ajustes'>
             <Ajustes />
+          </Route>
+        </Switch>
+
+        <Switch>
+          <Route exact path='/Reportes'>
+            <Reportes />
           </Route>
         </Switch>
 
