@@ -85,7 +85,7 @@ export default function Menu() {
                     ))
                 }
                 { usuario === 3 &&
-                    ['Ajustes','Proceso', 'Administración', 'Validación', 'Contenido','Habilitación','Centros','Vacunas'].map((text, index) => (
+                    ['Ajustes','Proceso', 'Administración', 'Validación', 'Contenido','Habilitación','Centros','Vacunas','Reportes'].map((text, index) => (
                         <ListItem button key={text} component={Link} to={'/' + text}>
 
                             <ListItemText primary={text} />

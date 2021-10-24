@@ -8,20 +8,9 @@ import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Pdf from './Pdf';
+import ValidarCodigo from './validarCodigo';
 
-
-function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
 
 
 
@@ -94,6 +83,14 @@ export default function Proceso() {
                                 label="Nacimiento"
                                 defaultValue={info.fecha_nacimiento}
                             />
+                            <TextField
+                                margin="normal"
+                                fullWidth
+                                disabled
+                                id="vacuna"
+                                label="Vacuna administrada"
+                                defaultValue={info.vacuna}
+                            />
 
                         </Box>
                         <Box
@@ -152,6 +149,9 @@ export default function Proceso() {
                             label="2da Dosis Aplicada"
                             defaultValue={info.dosis3}
                         />
+                        <Pdf />
+                        <ValidarCodigo />
+                        
                         </Box>
                     </Box>
                 </Box>
