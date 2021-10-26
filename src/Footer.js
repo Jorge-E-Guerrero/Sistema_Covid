@@ -23,8 +23,8 @@ function Copyright(props) {
             <Link color="inherit" href="https://material-ui.com/">
                 Sistema Covid
             </Link>{' '}
-            {new Date().getDay()}/
-            {new Date().getMonth()}/
+            {new Date().getDate()}/
+            {new Date().getMonth() + 1}/
             {new Date().getFullYear()}
             {'.'}
         </Typography>
