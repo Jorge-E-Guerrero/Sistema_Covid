@@ -9,6 +9,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Typography } from '@mui/material';
 import BasicTabs from './tab';
 import Acordeon from './acordeon';
+import ValidarCodigoAnonimo from './validarCodigoAnonimo';
 
 const theme = createTheme();
 
@@ -46,6 +47,7 @@ export default function Informacion() {
                             }}
                         >
                         <BasicTabs />
+                        <ValidarCodigoAnonimo />
                         </Box>
                         <Box
                             sx={{

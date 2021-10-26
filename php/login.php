@@ -12,35 +12,30 @@ $method = $_SERVER['REQUEST_METHOD'];
     session_start();    
     $mysqli->set_charset('utf8');
 	    
-	$usuario = $dataObject-> dpi;
+	$usuario = $dataObject-> usuario;
 	$pas =	$dataObject-> clave;
     
   if ($nueva_consulta = $mysqli->prepare("SELECT 
-  *
-  FROM usuario
-  WHERE dpi = ?")) {
+  usuarios.nombre, usuarios.clave, usuarios.apellidos, usuarios.usuario, usuarios.idTipoUsuario, usuarios.id, tipo_usuario.etiquetaTipoUsuario, tipo_usuario.descripcionTipoUsuario 
+  FROM usuarios 
+  INNER JOIN tipo_usuario ON usuarios.idTipoUsuario = tipo_usuario.idTipoUsuario
+  WHERE usuario = ?")) {
         $nueva_consulta->bind_param('s', $usuario);
         $nueva_consulta->execute();
         $resultado = $nueva_consulta->get_result();
         if ($resultado->num_rows == 1) {
             $datos = $resultado->fetch_assoc();
              $encriptado_db = $datos['clave'];
-             $verificado = $datos['verificado'];
-            if($verificado == true){
-              if (password_verify($pas, $encriptado_db))
-              {
-                  $_SESSION['dpi'] = $datos['dpi'];
-                  echo json_encode(array('conectado'=>true,'dpi'=>$datos['dpi'], 'nombre'=>$datos['nombre'],  'apellido'=>$datos['apellido'], 'fecha_nacimiento'=>$datos['fecha_nacimiento'], 'tipo_usuario'=>$datos['tipo_usuario'] ) );
-                }
-  
-                 else {
-  
-                   echo json_encode(array('conectado'=>false, 'error' => 'La clave es incorrecta, vuelva a intentarlo.'));
+            if (password_verify($pas, $encriptado_db))
+            {
+                $_SESSION['usuario'] = $datos['usuario'];
+                echo json_encode(array('conectado'=>true,'usuario'=>$datos['usuario'], 'nombre'=>$datos['nombre'],  'apellidos'=>$datos['apellidos'], 'id'=>$datos['id'], 'idTipoUsuario'=>$datos['idTipoUsuario'], 'etiquetaTipoUsuario'=>$datos['etiquetaTipoUsuario']  ) );
               }
-            } else {
-                echo json_encode(array('conectado'=>false, 'error' => 'El usuario no esta verificado.'));
-            }
-            
+
+               else {
+
+                 echo json_encode(array('conectado'=>false, 'error' => 'La clave es incorrecta, vuelva a intentarlo.'));
+                    }
         }
         else {
               echo json_encode(array('conectado'=>false, 'error' => 'El usuario no existe.'));
