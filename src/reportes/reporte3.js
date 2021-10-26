@@ -5,19 +5,19 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { TextField } from '@mui/material';
 import axios from 'axios';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 
 import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 
 
 
-export default function Reporte1() {
 
-    const refFechaInicio = React.useRef('');
+export default function Reporte3() {
 
-    const refFechaFinal = React.useRef('');
-
-
-    const contenido_url = "http://localhost/ws-login/historialFechas.php";
+    const contenido_url = "http://localhost/ws-login/ausenciaVacuna.php";
 
     const [contenido, setContenido] = React.useState([['']]);
 
@@ -27,18 +27,23 @@ export default function Reporte1() {
         event.preventDefault();
 
         const params = {
-            inicio: refFechaInicio.current.value,
-            final: refFechaFinal.current.value
+            dosis: selectedCentro
         };
 
-
+        if(selectedCentro != ''){
             axios.post(contenido_url, JSON.stringify(params)).then(response => {
                 setContenido((response.data));
             });
 
-    
             console.log(params);
             console.log(contenido);
+        } else {
+            window.alert('');
+        }
+            
+
+    
+            
 
 
     };
@@ -46,12 +51,21 @@ export default function Reporte1() {
 
 
 
+   
+    const [selectedCentro, setSelectedCentro] = React.useState('');
+
+    const handleChangeCentro = (event) => {
+        setSelectedCentro(event.target.value);
+    };
+    
+
+
 
 
     return (
         <div>
             <Typography component="h1" variant="h5">
-                Personas vacunadas entre dos fechas
+                Inasistencia a vacuna
             </Typography>
             <Box component="form" noValidate sx={{ mt: 1 }}>
                 <Box component="form"
@@ -61,28 +75,25 @@ export default function Reporte1() {
                     noValidate
                     autoComplete="off"
                 >
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="fecha"
-                        //label="Fecha Inicio"
-                        name="fecha"
-                        type="date"
-                        defaultValue="0000-00-00"
-                        inputRef={refFechaInicio}
-                    />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        id="fecha"
-                        //label="Fecha Final"
-                        name="fecha"
-                        type="date"
-                        defaultValue="0000-00-00"
-                        inputRef={refFechaFinal}
-                    />
+                    <FormControl sx={{ m: 1, minWidth: 300 }}>
+                        <InputLabel id="demo-simple-select-helper-label" >Ausencia</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-helper-label"
+                            id="demo-simple-select-helper"
+                            value={selectedCentro}
+                            label="Centro de Vacunacion"
+                            onChange={handleChangeCentro}
+                        >
+                            <MenuItem value="">
+                                <em>None</em>
+                            </MenuItem>
+                            <MenuItem value='dosis1'>Primera Dosis</MenuItem>
+                            <MenuItem value='dosis2'>Segunda Dosis</MenuItem>
+                            <MenuItem value='dosis3'>Tercera Dosis</MenuItem>
+                            <MenuItem value='todas'>Cualquier Dosis</MenuItem>
+                        </Select>
+                    </FormControl>
+
           
                     <Button
                         onClick={HandleCambiarDisponibilidad}
@@ -97,17 +108,21 @@ export default function Reporte1() {
                     <ReactHTMLTableToExcel
                         id="test-table-xls-button"
                         className="download-table-xls-button"
-                        table="table-to-xls"
+                        table="table-to-xls3"
                         filename="tablexls"
                         sheet="tablexls"
                         buttonText="Descargar archivo"/>
                     }
                     <div id="hidden">
-                    <table id="table-to-xls">
+                    <table id="table-to-xls3">
+                        <tr>
+                            <th>Total: {contenido.length}</th>
+                        </tr>
                         {contenido.map((array) => (
                             <tr>
                             {array.map((valor) => (
                                 <th>{valor}</th>
+                                
                               ))}
                             </tr>
                           ))}

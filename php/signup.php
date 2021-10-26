@@ -52,44 +52,6 @@ $method = $_SERVER['REQUEST_METHOD'];
 	} else {
 		echo  json_encode(array('length'=>'0', 'error'=>true)) ;
 	}
-/*
-	echo $password;
-	echo "<br/>";
-	echo $clave;
-	echo "<hr/>";
-*/	
-/*
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
-*/
-/*
-if ($sql = $mysqli->prepare("CALL registro('$dpi','$clave','$nombre','$apellido','$fecha_nacimiento','$tipo_usuario','$telefono','$email','$centro','$enfermedad','$grupo')")){
-	$sql->execute();
-	
-	
-} else {
-	echo  json_encode(array('error'=>'error')) ;
-}
-*/
-/*
-echo json_encode(array('conectado'=>true) );	
-*/
-//echo json_encode(array('conectado'=>true ,'dpi'=>$dpi, 'nombre'=>$nombre,  'apellido'=>$apellido, 'fecha_nacimiento'=>$fecha_nacimiento, 'tipo_usuario'=>$tipo_usuario ) );
-
-/*
-
-if ($method == 'POST') {
-	echo json_encode(array('conectado'=>true ,'dpi'=>$dpi, 'nombre'=>$nombre,  'apellido'=>$apellido, 'fecha_nacimiento'=>$fecha_nacimiento, 'tipo_usuario'=>$tipo_usuario ) );
-} else {
-	echo mysqli_affected_rows($con);
-}
-*/
-
-
-
-
-
 
 
 

@@ -15,6 +15,7 @@ import Select from '@mui/material/Select';
 */
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import emailjs from 'emailjs-com';
 //import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 //import { useParams } from 'react-router-dom';
@@ -22,63 +23,9 @@ import Container from '@mui/material/Container';
 //import MultipleSelect from './MultipleSelect';
 
 
-function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
-
-/*
-const theme = createTheme({
-    palette: {
-        primary: {
-            main: '#00ff20',
-        },
-        secondary: {
-            main: '#f44336',
-        },
-    },
-});
-*/
-
-/*
-
-const url_confirmacion = 'http://localhost/ws-login/confirmacion.php';
-
-const enviarDatos = async (url, data) => {
-    const respuesta = await fetch(url, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-            'Content-Type': "application/json"
-        }
-    })
-    console.log(respuesta);
-    const json = await respuesta.json();
-    console.log(json);
-    window.localStorage.setItem('confirmacion', JSON.stringify(json));
-    const user = JSON.parse(window.localStorage.getItem('confirmacion'));
-    const confirmacion = user.confirmacion;
-    if (confirmacion == true) {
-        window.location.replace("/Validación");
-        window.localStorage.removeItem('registro');
-        window.localStorage.removeItem('confirmacion');
-
-    }
-
-    console.warn();
 
 
 
-}
-*/
 
 
 
@@ -125,11 +72,41 @@ export default function Register() {
     */
 
 
+
+    const sendEmail = (e) => {
+        e.preventDefault();
+
+        var templateParams = {
+
+            nombre:refNombre.current.value,
+            telefono:refTelefono.current.value,
+            correo:refCorreo.current.value,
+            asunto:refAsunto.current.value,
+            comentario:refComentario.current.value
+        };
+        console.log(templateParams);
+        
+        emailjs.send('service_um23kau', 'template_6e4t64i', templateParams, 'user_VGj3fvJK771qnT3LDsj0H')
+          .then((result) => {
+              console.log(result.text);
+        }, (error) => {
+              console.log(error.text);
+        });
+    };
+
+    const refNombre = React.useRef('');
+    const refTelefono = React.useRef('');
+    const refCorreo = React.useRef('');
+    const refAsunto = React.useRef('');
+    const refComentario = React.useRef('');
+    
+
     return (
 
         <Container component="main" maxWidth="xs" id="contacto" >
             <CssBaseline />
             <div className="form" id="divContacto">
+            
                 <Box fullWidth
 
                     sx={{
@@ -149,12 +126,17 @@ export default function Register() {
                             margin="normal"
                             fullWidth
                             label="Nombre"
+                            name="nombre"
+                            value="nombre"
+                            inputRef={refNombre}
 
                         />
                         <TextField
                             margin="normal"
                             fullWidth
                             label="Email"
+                            name="correo"
+                            inputRef={refCorreo}
 
                         />
                         <TextField
@@ -162,12 +144,16 @@ export default function Register() {
                         fullWidth
                         label="Telefono"
                         type="number"
+                        name="telefono"
+                        inputRef={refTelefono}
 
                         />
                         <TextField
                         margin="normal"
                         fullWidth
                         label="Asunto"
+                        name="asunto"
+                        inputRef={refAsunto}
 
                         />
                         <TextField
@@ -177,6 +163,8 @@ export default function Register() {
                             label="Comentario"
                             rows={15}
                             id="comentario"
+                            name="comentario"
+                            inputRef={refComentario}
 
                         />
 
@@ -185,14 +173,16 @@ export default function Register() {
                         <Button
 
                             type="submit"
-
+                            onClick={sendEmail}
                             variant="contained"
                             sx={{ mt: 3, mb: 2, maxWidth: 500, width: '90%' }}
                         >
                             Enviar
                         </Button>
+
                     </Box>
                 </Box>
+                
             </div>
 
         </Container>

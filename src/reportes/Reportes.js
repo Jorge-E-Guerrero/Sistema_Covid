@@ -7,7 +7,10 @@ import Container from '@mui/material/Container';
 import { Link } from 'react-router-dom';
 
 import Reporte1 from './reporte1';
-
+import Reporte2 from './reporte2';
+import Reporte3 from './reporte3';
+import Reporte4 from './reporte4';
+import Reporte5 from './reporte5';
 
 
 
@@ -35,6 +38,11 @@ export default function Reportes() {
                 >
 
                     <Reporte1 />
+                    <Reporte2 />
+                    <Reporte3 />
+                    <Reporte4 />
+                    <Reporte5 />
+
                 </Box>
             </div>
         </Container>

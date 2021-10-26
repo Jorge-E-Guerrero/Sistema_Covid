@@ -74,6 +74,7 @@ export default function Pdf() {
 
     const [contenido, setContenido] = React.useState(['']);
     
+    console.log(params);
     console.log(contenido);
 
 

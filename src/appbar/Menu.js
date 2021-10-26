@@ -68,13 +68,21 @@ export default function Menu() {
             </List>
             <Divider />
             <List>
-                { usuario === 1 &&
+                { usuario === '1' &&
                     ['Ajustes','Proceso'].map((text, index) => (
                         <ListItem button key={text} component={Link} to={'/' + text} >
 
                             <ListItemText primary={text} />
                         </ListItem>
                     ))
+                }
+                { usuario === 1 &&
+                ['Ajustes','Proceso'].map((text, index) => (
+                    <ListItem button key={text} component={Link} to={'/' + text} >
+
+                        <ListItemText primary={text} />
+                    </ListItem>
+                ))
                 }
                 { usuario === 2 &&
                     ['Ajustes','Proceso', 'Validación'].map((text, index) => (
