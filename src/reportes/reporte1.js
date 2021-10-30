@@ -105,6 +105,9 @@ export default function Reporte1() {
                     <div id="hidden">
                     <table id="table-to-xls">
                     <tr>
+                        <th>Total: {contenido.length}</th>
+                    </tr>
+                    <tr>
                         <th>DPI</th>
                         <th>Nombre</th>
                         <th>Apellido</th>

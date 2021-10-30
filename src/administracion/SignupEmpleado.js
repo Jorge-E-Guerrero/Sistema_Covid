@@ -23,20 +23,6 @@ import Select from '@mui/material/Select';
 
 import emailjs from 'emailjs-com';
 
-
-function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
-
 const theme = createTheme();
 
 const url_signup = 'http://localhost/ws-login/signup.php';
