@@ -64,8 +64,8 @@ begin
       set bool_grupo = false;
     end if;
 
-    if edad > fecha_nacimiento_x or bool_enfermedad = true or bool_grupo = true then
-    insert into usuario (dpi ,clave, nombre, apellido, fecha_nacimiento, tipo_usuario) 
+    if edad > fecha_nacimiento_x or bool_enfermedad = true or bool_grupo = true or tipo_usuario_x = '2' then
+    insert into usuario (dpi ,clave, nombre, apellido, fecha_nacimiento, tipo_usuario, inscripcion, verificado) 
     
     values (
       dpi_x,
@@ -73,7 +73,9 @@ begin
       nombre_x,
       apellido_x,
       fecha_nacimiento_x,
-      tipo_usuario_x
+      tipo_usuario_x,
+      now(),
+      true
     );
     
     insert into centro_vacunacion (dpi , centro ) 
@@ -84,7 +86,6 @@ begin
     );
     
     insert into contacto (dpi , telefono, email ) 
-    
     values (
       dpi_x,
       telefono_x,
@@ -92,7 +93,6 @@ begin
     );
 
     insert into vacuna( dpi, vacuna, dosis1_fecha, dosis2_fecha, refuerzo_fecha)
-    
     values (
       dpi_x,
       '',
@@ -101,9 +101,7 @@ begin
       ''
     );
     
-    
     insert into historial( dpi, dosis1, dosis2, dosis3 )
-    
     values (
       dpi_x,
       false,
@@ -123,9 +121,7 @@ begin
     insert into grupo_prioritario (dpi, grupo ) 
     values (
       dpi_x,
-      grupo_x
-      
-      
+      grupo_x  
     );
     end if;
     end if;
@@ -138,7 +134,9 @@ end;
 
 commit;
 
-CREATE TRIGGER cola_vacuna BEFORE 
+drop trigger cola_vacuna;
+
+CREATE TRIGGER cola_vacuna AFTER 
 INSERT ON usuario 
  	FOR EACH ROW
  BEGIN
@@ -147,11 +145,13 @@ INSERT ON usuario
  END;
  
  
+ drop trigger import_csv;
+ 
  create trigger import_csv after
  insert on data_cvs
   for each row
  Begin
-    insert into usuario (dpi ,clave, nombre, apellido, fecha_nacimiento, tipo_usuario) 
+    insert into usuario (dpi ,clave, nombre, apellido, fecha_nacimiento, tipo_usuario, inscripcion, verificado) 
     
     values (
       New.dpi,
@@ -159,7 +159,9 @@ INSERT ON usuario
       New.nombre,
       New.apellido,
       New.fecha_nacimiento,
-      New.tipo_usuario
+      New.tipo_usuario,
+      now(),
+      true
     );
     
     insert into centro_vacunacion (dpi , centro ) 
@@ -186,7 +188,6 @@ INSERT ON usuario
       '',
       ''
     );
-    
     
     insert into historial( dpi, dosis1, dosis2, dosis3 )
     
@@ -303,6 +304,9 @@ from usuario u
 inner join vacuna v on u.dpi = v.dpi
 inner join historial h on u.dpi = h.dpi;
 
+
+
+
 select * from confirmacion where dpi = 66666   and (dosis1_fecha between now() and DATE_ADD(now() , INTERVAL 7 day)
                                                or dosis2_fecha between now() and DATE_ADD(now() , INTERVAL 7 day)
                                                or refuerzo_fecha between now() and DATE_ADD(now() , INTERVAL 7 day));
@@ -387,8 +391,6 @@ create procedure cambiarUsuario(in dpi_x bigint(13),
 Begin
   start transaction;
     update usuario set tipo_usuario = tipo_usuario_x where dpi = dpi_x;
-  
-  
   
   commit;
 
@@ -765,6 +767,8 @@ begin
     end loop read_loop;
   close curl;
   
+  delete from cola_vacuna;
+  
   commit;
 
 end;
@@ -862,13 +866,16 @@ declare texto varchar(100);
 
   select count(*) into total from usuario;
   if dosis_x = 'dosis1' then 
-    select ((count(*)/total)*100) into division from historial h inner join enfermedad e on h.dpi = e.dpi  where h.dosis1 = true and e.enfermedad_cronica = enfermedad_x  group by e.enfermedad_cronica;
+    select ((count(*)/total)*100) into division from historial h inner join enfermedad e on h.dpi = e.dpi  
+    where h.dosis1 = true and e.enfermedad_cronica = enfermedad_x  group by e.enfermedad_cronica;
     set texto = ifnull(concat( enfermedad_x, ': ',division,'%'),concat( enfermedad_x, ': 0.00%'));
   elseif dosis_x = 'dosis2' then 
-    select ((count(*)/total)*100) into division from historial h inner join enfermedad e on h.dpi = e.dpi  where h.dosis2 = true and e.enfermedad_cronica = enfermedad_x  group by e.enfermedad_cronica;
+    select ((count(*)/total)*100) into division from historial h inner join enfermedad e on h.dpi = e.dpi  
+    where h.dosis2 = true and e.enfermedad_cronica = enfermedad_x  group by e.enfermedad_cronica;
     set texto = ifnull(concat( enfermedad_x, ': ',division,'%'),concat( enfermedad_x, ': 0.00%'));
   elseif dosis_x = 'dosis3' then 
-    select ((count(*)/total)*100) into division from historial h inner join enfermedad e on h.dpi = e.dpi  where h.dosis3 = true and e.enfermedad_cronica = enfermedad_x  group by e.enfermedad_cronica;
+    select ((count(*)/total)*100) into division from historial h inner join enfermedad e on h.dpi = e.dpi  
+    where h.dosis3 = true and e.enfermedad_cronica = enfermedad_x  group by e.enfermedad_cronica;
     set texto = ifnull(concat( enfermedad_x, ': ',division,'%'),concat( enfermedad_x, ': 0.00%'));
   end if;
 	
@@ -964,4 +971,296 @@ select u.dpi, u.nombre, u.apellido, u.fecha_nacimiento , v.* , c.* from usuario 
           
           
           select * from confirmacion where vacuna != '';
-          rollback;
+rollback;
+
+
+drop view proceso;
+
+
+CREATE VIEW proceso AS
+
+select u.dpi, 
+DATE_FORMAT(u.inscripcion, "%e/%m/%Y") as inscripcion,
+bool_vacuna(v.vacuna) as vacuna, 
+DATE_FORMAT(v.dosis1_fecha, "%e/%m/%Y") as dosis1_fecha, 
+bool_dosis(h.dosis1, v.dosis1_fecha) as dosis1,
+DATE_FORMAT(v.dosis2_fecha, "%e/%m/%Y") as dosis2_fecha, 
+bool_dosis(h.dosis2, v.dosis2_fecha) as dosis2,
+DATE_FORMAT(v.refuerzo_fecha, "%e/%m/%Y") as refuerzo_fecha, 
+bool_dosis(h.dosis3, v.refuerzo_fecha) as dosis3,
+IFNULL(completado(u.dpi,v.vacuna),'Vacunación en proceso') as proceso
+from usuario u 
+inner join vacuna v on u.dpi = v.dpi
+inner join historial h on u.dpi = h.dpi;
+
+
+
+select * from proceso;
+
+drop function bool_dosis;
+
+CREATE FUNCTION bool_dosis (dosis tinyint,fecha date) RETURNS varchar(40)
+BEGIN
+declare valor varchar(40);
+	if dosis = true then
+    set valor = 'Efectuada';
+  else
+  if fecha != '' then
+    set valor = 'Programada';
+  else
+    set valor = 'No asignada';
+  end if;
+  end if;
+	RETURN valor;
+END;
+
+
+drop function completado;
+
+
+CREATE FUNCTION completado(dpi_x bigint(13),vacuna_x varchar(40)) RETURNS varchar(40)
+BEGIN
+declare valor varchar(40);
+declare numero int(11);
+declare bool_x tinyint;
+
+
+select ndosis into numero from catalogo_vacuna where vacuna = vacuna_x;
+	
+  
+  if numero = 1 then
+    select dosis1 into bool_x from historial where dpi = dpi_x;
+    if bool_x = true then 
+      set valor = 'Vacunación completada';
+    else 
+      set valor = 'Vacunación en proceso';
+    end if;
+  elseif numero = 2 then
+    select dosis2 into bool_x from historial where dpi = dpi_x;
+    if bool_x = true then 
+      set valor = 'Vacunación completada';
+    else 
+      set valor = 'Vacunación en proceso';
+    end if;
+  elseif numero = 3 then 
+    select dosis3 into bool_x from historial where dpi = dpi_x;
+    if bool_x = true then 
+      set valor = 'Vacunación completada';
+    else 
+      set valor = 'Vacunación en proceso';
+    end if;
+  end if;
+
+
+	RETURN valor;
+END;
+
+CREATE FUNCTION bool_vacuna(vacuna_x varchar(40)) RETURNS varchar(40)
+BEGIN
+declare valor varchar(40);
+  
+if vacuna_x != '' then
+  set valor = vacuna_x;
+else 
+  set valor = 'No asignada';
+end if;
+
+	RETURN valor;
+END;
+
+
+
+select *from catalogo_vacuna;
+rollback;
+commit;
+          
+          
+drop procedure prueba_out;
+
+
+
+create procedure prueba_out(out variable bigint(20))
+begin 
+  set variable = 123;
+end;
+
+
+select (max(codigo)+ 1) from registro_estado;
+
+rollback;
+
+
+select * from proceso;
+select * FROM registro_estado;
+
+drop procedure generar_pdf;
+
+create procedure generar_pdf(in codigo_x varchar(60),
+                             in inscripcion_x varchar(60),
+                             in vacuna_x varchar(60),
+                             in dosis1_fecha_x varchar(60),
+                             in dosis1_x varchar(60),
+                             in dosis2_fecha_x varchar(60),
+                             in dosis2_x varchar(60),
+                             in dosis3_fecha_x varchar(60),
+                             in dosis3_x varchar(60),
+                             in proceso_x varchar(60)
+                             )
+begin
+  start transaction;
+    INSERT INTO registro_estado (codigo, inscripcion, vacuna, dosis1_fecha, dosis1, dosis2_fecha, dosis2, refuerzo_fecha, dosis3, proceso, creacion) 
+    VALUES (
+      codigo_x,
+      STR_TO_DATE(inscripcion_x,'%d/%m/%Y'),
+      vacuna_x,
+      ifnull(STR_TO_DATE(dosis1_fecha_x,'%d/%m/%Y'),'0000-00-00'),
+      dosis1_x,
+      ifnull(STR_TO_DATE(dosis2_fecha_x,'%d/%m/%Y'),'0000-00-00'),
+      dosis2_x,
+      ifnull(STR_TO_DATE(dosis3_fecha_x,'%d/%m/%Y'),'0000-00-00'),
+      dosis3_x,
+      proceso_x, 
+      now()
+      );
+  commit;
+end;
+
+
+call generar_pdf('10000000000000000003', '25/12/2000', 'Moderna', '25/5/2020', 'Efectuada','25/5/2020', 'Efectuada', '0/00/0000', 'Efectuada', 'Vacunacion completa');
+
+
+select ifnull(STR_TO_DATE('0/00/0000','%d/%m/%Y'),'');
+
+
+
+select codigo,
+DATE_FORMAT(inscripcion, "%e/%m/%Y") as inscripcion,
+vacuna,
+DATE_FORMAT(dosis1_fecha, "%e/%m/%Y") as dosis1_fecha,
+dosis1,
+DATE_FORMAT(dosis2_fecha, "%e/%m/%Y") as dosis2_fecha,
+dosis2,
+DATE_FORMAT(refuerzo_fecha, "%e/%m/%Y") as refuerzo_fecha,
+dosis3,
+proceso
+FROM registro_estado;
+
+
+
+select u.dpi, u.nombre, u.apellido, c.centro, v.vacuna, v.dosis1_fecha, v.dosis2_fecha, v.refuerzo_fecha from usuario u 
+inner join centro_vacunacion c on u.dpi = c.dpi
+inner join vacuna v on u.dpi = v.dpi
+inner join historial h on u.dpi = h.dpi 
+where (dosis1 = true and v.dosis1_fecha between '1981-01-01' and '2022-01-01') 
+or (dosis2 = true and v.dosis2_fecha between '1981-01-01' and '2022-01-01') 
+or (dosis3 = true and v.refuerzo_fecha between '1981-01-01' and '2022-01-01') 
+order by c.centro, v.dosis1_fecha, v.dosis2_fecha, v.refuerzo_fecha;
+
+
+
+/*SELECT cast(FLOOR(RAND()*(8000000000000000000)+10000000000000000000) as varchar(20));*/
+
+
+CREATE VIEW detalle_centro AS
+
+select u.dpi, u.nombre, u.apellido, c.centro, v.vacuna, v.dosis1_fecha as fecha from usuario u 
+inner join centro_vacunacion c on u.dpi = c.dpi
+inner join vacuna v on u.dpi = v.dpi
+inner join historial h on u.dpi = h.dpi
+where h.dosis1 = true
+union select u.dpi, u.nombre, u.apellido, c.centro, v.vacuna,  v.dosis2_fecha from usuario u 
+inner join centro_vacunacion c on u.dpi = c.dpi
+inner join vacuna v on u.dpi = v.dpi
+inner join historial h on u.dpi = h.dpi
+where h.dosis2 = true
+union select u.dpi, u.nombre, u.apellido, c.centro, v.vacuna,  v.refuerzo_fecha from usuario u 
+inner join centro_vacunacion c on u.dpi = c.dpi
+inner join vacuna v on u.dpi = v.dpi
+inner join historial h on u.dpi = h.dpi 
+where h.dosis3 = true;
+
+
+select * from detalle_centro where centro = 'CAMIP 1' order by centro asc, fecha asc ;
+
+drop view ausencia_vacuna;
+
+CREATE VIEW ausencia_vacuna AS
+
+select u.dpi, u.nombre, u.apellido, c.centro, v.vacuna, v.dosis1_fecha, v.dosis2_fecha, v.refuerzo_fecha, h.dosis1, h.dosis2, h.dosis3 
+from usuario u 
+inner join centro_vacunacion c on u.dpi = c.dpi
+inner join vacuna v on u.dpi = v.dpi
+inner join historial h on u.dpi = h.dpi
+where vacuna != '';
+
+select * from ausencia_vacuna
+where (dosis1_fecha < date_add(now(), interval -7 day) and dosis1 = false and dosis1_fecha != '')
+or (dosis2_fecha < date_add(now(), interval -7 day) and dosis2 = false and dosis2_fecha != '')
+or (refuerzo_fecha < date_add(now(), interval -7 day) and dosis3 = false and refuerzo_fecha != '');
+ 
+ 
+select * from ausencia_vacuna;
+select * from ausencia_vacuna where dosis1_fecha < date_add(now(), interval -7 day) and dosis1_fecha != '';
+
+
+
+select * from contacto_enfermedad;
+
+CREATE VIEW contacto_enfermos AS
+
+select u.dpi,
+u.nombre,
+u.apellido,
+DATE_FORMAT(u.fecha_nacimiento, "%e/%m/%Y") as fecha_nacimiento,
+en.enfermedad_cronica,
+ce.centro,
+co.telefono,
+co.email,
+DATE_FORMAT(v.dosis1_fecha, "%e/%m/%Y") as dosis1_fecha,
+DATE_FORMAT(v.dosis2_fecha, "%e/%m/%Y") as dosis2_fecha,
+DATE_FORMAT(v.refuerzo_fecha, "%e/%m/%Y") as refuerzo_fecha,
+bool_dosis(h.dosis1, v.dosis1_fecha) as dosis1,
+bool_dosis(h.dosis2, v.dosis2_fecha) as dosis2,
+bool_dosis(h.dosis3, v.refuerzo_fecha) as dosis3 
+from usuario u 
+inner join enfermedad en on u.dpi = en.dpi
+inner join centro_vacunacion ce on u.dpi = ce.dpi
+inner join contacto co on u.dpi = co.dpi
+inner join vacuna v on u.dpi = v.dpi
+inner join historial h on u.dpi = h.dpi
+order by ce.centro asc, en.enfermedad_cronica asc, u.dpi asc;
+
+select * from contacto_enfermos;
+
+
+
+CREATE VIEW historial_grupo AS
+
+select u.dpi,
+u.nombre,
+u.apellido,
+DATE_FORMAT(u.fecha_nacimiento, "%e/%m/%Y") as fecha_nacimiento,
+g.grupo,
+DATE_FORMAT(v.dosis1_fecha, "%e/%m/%Y") as dosis1_fecha,
+DATE_FORMAT(v.dosis2_fecha, "%e/%m/%Y") as dosis2_fecha,
+DATE_FORMAT(v.refuerzo_fecha, "%e/%m/%Y") as refuerzo_fecha,
+bool_dosis(h.dosis1, v.dosis1_fecha) as dosis1,
+bool_dosis(h.dosis2, v.dosis2_fecha) as dosis2,
+bool_dosis(h.dosis3, v.refuerzo_fecha) as dosis3 
+from usuario u 
+inner join grupo_prioritario g on u.dpi = g.dpi
+inner join vacuna v on u.dpi = v.dpi
+inner join historial h on u.dpi = h.dpi
+order by g.grupo asc, u.dpi asc ;
+
+
+
+select * from historial_grupo;
+
+select u.nombre, u.apellido, c.email, cen.centro, DATE_FORMAT(date_add(now(),interval 7 day), "%e/%m/%Y") as fecha_programada from usuario u
+inner join vacuna v on u.dpi = v.dpi
+inner join contacto c on u.dpi = c.dpi 
+inner join centro_vacunacion cen on u.dpi = cen.dpi
+where (dosis1_fecha = date(date_add(now(),interval 8 day))) 
+or (dosis2_fecha = date(date_add(now(),interval 8 day)))
+or (refuerzo_fecha = date(date_add(now(),interval 8 day)));
