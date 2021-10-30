@@ -85,13 +85,22 @@ export default function Register() {
             comentario:refComentario.current.value
         };
         console.log(templateParams);
+
+        if(templateParams.nombre != '' && templateParams.correo != '' && templateParams.telefono != '' && templateParams.asunto != '' && templateParams.comentario != ''){
+            emailjs.send('service_um23kau', 'template_6e4t64i', templateParams, 'user_VGj3fvJK771qnT3LDsj0H')
+            .then((result) => {
+                console.log(result.text);
+                window.alert('Su mensaje ha sido enviado exitosamente');
+                window.location.reload();
+            }, (error) => {
+                console.log(error.text);
+                window.alert('Ha ocurrido un error, envie nuevamente');
+            });
+        } else {
+            window.alert('Llena todos los campos');
+        }
         
-        emailjs.send('service_um23kau', 'template_6e4t64i', templateParams, 'user_VGj3fvJK771qnT3LDsj0H')
-          .then((result) => {
-              console.log(result.text);
-        }, (error) => {
-              console.log(error.text);
-        });
+        
     };
 
     const refNombre = React.useRef('');
@@ -127,7 +136,6 @@ export default function Register() {
                             fullWidth
                             label="Nombre"
                             name="nombre"
-                            value="nombre"
                             inputRef={refNombre}
 
                         />

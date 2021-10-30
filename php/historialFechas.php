@@ -30,20 +30,9 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 
 	if ($consulta == TRUE) {
-		//echo json_encode(array($consulta->fetch_all()));
+
 		echo json_encode($consulta->fetch_all());
-		/*
-
-		for ($i=0 ; $i< $consulta->num_rows ; $i++) {
-			$dato = $consulta->fetch_assoc();
-			echo json_encode(array( 'imagen'=>$dato['nombre_imagen'] , 'titulo'=>$dato['titulo'] ,'texto'=>$dato['contenido'] ));
-			
-		}*/
-/*
-
-		$datos = $consulta->fetch_assoc();
-		echo json_encode(array( 'titulo'=>$datos['titulo'] ,'texto'=>$datos['contenido'] ));
-*/		
+	
 	} else {
 		echo  json_encode(array('length'=>'0', 'error'=>true)) ;
 	}
