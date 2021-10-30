@@ -62,7 +62,15 @@ const enviarDatos = async (url, data) => {
               window.location.reload();
               window.location.replace("/Home");
         }, (error) => {
-              console.log(error.text);
+            console.log(error.text);
+            emailjs.send('service_g6l9iw8', 'template_75gd29f', templateParams, 'user_VGj3fvJK771qnT3LDsj0H')
+             .then((result) => {
+                console.log(result.text);
+                window.location.reload();
+                window.location.replace("/Home");
+            }, (error) => {
+                console.log(error.text);
+          });
         });
 
 

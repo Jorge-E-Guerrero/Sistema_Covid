@@ -104,6 +104,16 @@ export default function Reporte1() {
                     }
                     <div id="hidden">
                     <table id="table-to-xls">
+                    <tr>
+                        <th>DPI</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Centro de vacunación</th>
+                        <th>Vacuna</th>
+                        <th>Fecha 1ra dosis</th>
+                        <th>Fecha 2da dosis</th>
+                        <th>Fecha 3ra dosis</th>
+                    </tr>
                         {contenido.map((array) => (
                             <tr>
                             {array.map((valor) => (

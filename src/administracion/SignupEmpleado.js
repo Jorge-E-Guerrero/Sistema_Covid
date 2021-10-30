@@ -21,7 +21,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-
+import emailjs from 'emailjs-com';
 
 
 function Copyright(props) {
@@ -57,8 +57,22 @@ const enviarDatos = async (url, data) => {
   
     const conexion = user.conectado;
     if (conexion === true) {
-      window.location.replace("/Administración");
-      window.localStorage.removeItem('NuevoEmpleado');
+        console.log(data);
+        var templateParams = {
+
+            nombre:data.nombre,
+            correo:data.email
+        };
+
+         emailjs.send('service_um23kau', 'template_75gd29f', templateParams, 'user_VGj3fvJK771qnT3LDsj0H')
+          .then((result) => {
+              console.log(result.text);
+              window.location.replace("/Administración");
+              window.localStorage.removeItem('NuevoEmpleado');
+        }, (error) => {
+              console.log(error.text);
+        });
+      
     }
 
 }
@@ -154,20 +168,7 @@ export default function Signup() {
         });
     }, []);
 
-/*
-    const centro_url = "http://localhost/ws-login/centros.php";
 
-    const [centro, setCentro] = React.useState(['']);
-    
-
-    React.useEffect(() => {
-        axios.get(centro_url).then(response => {
-          setCentro(response.data);
-        });
-    }, []);
-
-    console.log(centro);
-*/
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
@@ -375,22 +376,10 @@ export default function Signup() {
                         >
                             Crear 
                         </Button>
-                        <Grid container>
-                            <Grid item xs>
-                                <Link href="/Contacto" variant="body2">
-                                    El DPI ya ha sido registrado?
-                                </Link>
-                            </Grid>
-                            <Grid item>
-                                <Link href="/login" variant="body2">
-                                    Ya tienes una cuenta? Log In
-                                </Link>
-                            </Grid>
-                        </Grid>
                     </Box>
                 </Box>
             </div>
-            <Copyright sx={{ mt: 8, mb: 4 }} />
+
         </Container>
         </ThemeProvider >
     );

@@ -121,6 +121,14 @@ export default function Reporte2() {
                         <tr>
                             <th>Total: {contenido.length}</th>
                         </tr>
+                        <tr>
+                            <th>DPI</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Centro de vacunación</th>
+                            <th>Vacuna</th>
+                            <th>Fecha</th>
+                        </tr>
                         {contenido.map((array) => (
                             <tr>
                             {array.map((valor) => (

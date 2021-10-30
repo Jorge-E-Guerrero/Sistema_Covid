@@ -118,6 +118,19 @@ export default function Reporte3() {
                         <tr>
                             <th>Total: {contenido.length}</th>
                         </tr>
+                        <tr>
+                            <th>DPI</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Centro de vacunación</th>
+                            <th>Vacuna</th>
+                            <th>Fecha 1ra dosis</th>
+                            <th>Fecha 2da dosis</th>
+                            <th>Fecha 3ra dosis</th>
+                            <th>1ra Dosis</th>
+                            <th>2da Dosis</th>
+                            <th>3ra Dosis</th>
+                        </tr>
                         {contenido.map((array) => (
                             <tr>
                             {array.map((valor) => (
